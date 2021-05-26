@@ -1,0 +1,20 @@
+---
+simp_options::pki: 'simp'
+simp_options::pki::source: '/etc/pki/simp-testing/pki'
+simp_options::ldap::base_dn: 'dc=test,dc=org'
+simp_options::ldap::bind_hash: '{SHA1}1234567890'
+simp_options::firewall: true
+simp_options::trusted_nets: ['1.2.3.4/24']
+
+simp_ds389::instances::accounts::root_pw: 'root_password'
+simp_ds389::instances::accounts::port: 333
+simp_ds389::instances::accounts::secure_port: 666
+simp_ds389::instances::accounts::users_group_id: 7777
+simp_ds389::instances::accounts::administrators_group_id: 777
+simp_ds389::instances::accounts::instance_params:
+  service_user: 'myuser'
+simp_ds389::instances::accounts::password_policy:
+  passwordMinLowers: 3
+  passwordLockoutDuration: 999
+simp_ds389::instances::accounts::tls_params:
+  source: '/my/source'

@@ -1,24 +1,28 @@
-RSpec.configure do |c|
-  c.mock_with :rspec
-end
-
 require 'puppetlabs_spec_helper/module_spec_helper'
 require 'rspec-puppet'
-require 'pathname'
 require 'simp/rspec-puppet-facts'
 include Simp::RspecPuppetFacts
 
-if ENV['PUPPET_DEBUG']
-  Puppet::Util::Log.level = :debug
-  Puppet::Util::Log.newdestination(:console)
-end
-
+require 'pathname'
 
 # RSpec Material
 fixture_path = File.expand_path(File.join(__FILE__, '..', 'fixtures'))
 module_name = File.basename(File.expand_path(File.join(__FILE__,'../..')))
 
-default_hiera_config =<<-DEFAULT_HIERA_CONFIG
+# Add fixture lib dirs to LOAD_PATH. Work-around for PUP-3336
+if Puppet.version < "4.0.0"
+  Dir["#{fixture_path}/modules/*/lib"].entries.each do |lib_dir|
+    $LOAD_PATH << lib_dir
+  end
+end
+
+
+if !ENV.key?( 'TRUSTED_NODE_DATA' )
+  warn '== WARNING: TRUSTED_NODE_DATA is unset, using TRUSTED_NODE_DATA=yes'
+  ENV['TRUSTED_NODE_DATA']='yes'
+end
+
+default_hiera_config =<<-EOM
 ---
 version: 5
 hierarchy:
@@ -34,8 +38,8 @@ hierarchy:
     path: default.yaml
 defaults:
   data_hash: yaml_data
-DEFAULT_HIERA_CONFIG
-
+  datadir: "stub"
+EOM
 
 # This can be used from inside your spec tests to set the testable environment.
 # You can use this to stub out an ENC.
@@ -70,7 +74,7 @@ end
 #
 # Note: Any colons (:) are replaced with underscores (_) in the class name.
 def set_hieradata(hieradata)
-    RSpec.configure { |c| c.default_facts['custom_hiera'] = hieradata }
+  RSpec.configure { |c| c.default_facts['custom_hiera'] = hieradata }
 end
 
 if not File.directory?(File.join(fixture_path,'hieradata')) then
@@ -91,8 +95,12 @@ RSpec.configure do |c|
     }
   }
 
+  c.mock_framework = :rspec
+  c.mock_with :mocha
+
   c.module_path = File.join(fixture_path, 'modules')
   c.manifest_dir = File.join(fixture_path, 'manifests')
+
   c.hiera_config = File.join(fixture_path,'hieradata','hiera.yaml')
 
   # Useless backtrace noise
@@ -109,6 +117,16 @@ RSpec.configure do |c|
 
   c.before(:all) do
     data = YAML.load(default_hiera_config)
+    data.keys.each do |key|
+      next unless data[key].is_a?(Hash)
+
+      if data[key][:datadir] == 'stub'
+        data[key][:datadir] = File.join(fixture_path, 'hieradata')
+      elsif data[key]['datadir'] == 'stub'
+        data[key]['datadir'] = File.join(fixture_path, 'hieradata')
+      end
+    end
+
     File.open(c.hiera_config, 'w') do |f|
       f.write data.to_yaml
     end
@@ -123,9 +141,8 @@ RSpec.configure do |c|
     end
 
     # ensure the user running these tests has an accessible environmentpath
-    Puppet[:digest_algorithm] = 'sha256'
-    Puppet[:environmentpath]  = @spec_global_env_temp
-    Puppet[:user]  = Etc.getpwuid(Process.uid).name
+    Puppet[:environmentpath] = @spec_global_env_temp
+    Puppet[:user] = Etc.getpwuid(Process.uid).name
     Puppet[:group] = Etc.getgrgid(Process.gid).name
 
     # sanitize hieradata
