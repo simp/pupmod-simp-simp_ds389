@@ -15,7 +15,7 @@ describe 'simp_ds389 class' do
       let(:server_fqdn) { fact_on(server, 'fqdn') }
       let(:root_pw) { 's00perSekr!tP@ssw0rd'}
       #default base_dn should be domain
-      let(:domain) { facts_on(server,'domain') }
+      let(:domain) { fact_on(server,'domain') }
 
       let(:base_dn) { 'dc=' + "#{domain}".split('.').join(',dc=') }
 
@@ -25,8 +25,6 @@ describe 'simp_ds389 class' do
       let(:ds_root_name) { 'accounts'}
 
       let(:hieradata) {{
-        'simp_options::pki' => true,
-        'simp_options::pki::source' => '/etc/pki/simp-testing/pki',
         'simp_ds389::instances::accounts::root_pw' =>  "#{root_pw}",
       }}
 
@@ -41,16 +39,20 @@ describe 'simp_ds389 class' do
           apply_manifest_on(server, server_manifest, :catch_changes => true)
         end
 
+        it 'should have a dirsrv  accounts instance' do
+          result = on(server, '/sbin/dsctl -l').output.strip
+          expect(result).to include("slapd-#{ds_root_name}")
+        end
         it 'should log into ldapi' do
           on(server, %(ldapsearch -x -w "#{root_pw}" -D "#{root_dn}" -H ldapi://%2fvar%2frun%2fslapd-#{ds_root_name}.socket -b "cn=tasks,cn=config"))
         end
 
-        it 'should login to 389DS Start TLS' do
+        it 'should login to 389DS without' do
           on(server, %(ldapsearch -x -w "#{root_pw}" -D "#{root_dn}" -H ldap://#{server_fqdn}:389  -b "cn=tasks,cn=config"))
         end
 
         it 'should not login to 389DS encrypted' do
-          on(server, %(ldapsearch -x -w "#{root_pw}" -D "#{root_dn}" -H ldaps://#{server_fqdn}:636  -b "cn=tasks,cn=config"))
+          expect { on(server, %(ldapsearch -x -w "#{root_pw}" -D "#{root_dn}" -H ldaps://#{server_fqdn}:636  -b "cn=tasks,cn=config")) }.to raise_error(Beaker::Host::CommandFailure)
         end
 
         it 'should have the bind account and the users and administrators groups' do
@@ -60,18 +62,14 @@ describe 'simp_ds389 class' do
           expect(result).to include("cn=users,ou=Group,#{base_dn}")
         end
 
-        it 'should get results with the bind account' do
-          result = on(server, %(ldapsearch -x -w "#{bind_pw}" -D "#{bind_dn}" -H ldap://#{server_fqdn}  -b "#{base_dn}")).output.strip
-          expect(result).to include("cn=users,ou=Group,#{base_dn}")
-        end
       end
 
       context "remove the instance" do
         let(:remove_manifest) {
           <<-EOS
            ds389::instance { "#{ds_root_name}":
-             ensure => absent
-             }
+             ensure => 'absent'
+           }
           EOS
         }
         it 'should work with no errors' do
@@ -79,8 +77,14 @@ describe 'simp_ds389 class' do
         end
 
         it 'should be idempotent' do
-          apply_manifest_on(server, server_manifest, :catch_changes => true)
+          apply_manifest_on(server, remove_manifest, :catch_changes => true)
         end
+
+        it 'should not have a dirsrv  accounts instance' do
+          result = on(server, '/sbin/dsctl -l').output.strip
+          expect(result).not_to include("slapd-#{ds_root_name}")
+        end
+      end
 
     end
   end

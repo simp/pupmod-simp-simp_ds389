@@ -16,7 +16,7 @@ lookup_options:
 
 simp_ds389::instances::accounts::password_policy:
   nsslapd-pwpolicy-local: 'on'
-  passwordchange: 'on'
+  passwordChange: 'on'
   passwordMustChange: 'on'
   passwordHistory: 'on'
   passwordInHistory: 6
