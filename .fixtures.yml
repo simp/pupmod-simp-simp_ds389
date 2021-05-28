@@ -4,10 +4,7 @@
 fixtures:
   repositories:
     compliance_markup: https://github.com/simp/pupmod-simp-compliance_markup
-#    ds389: https://github.com/simp/pupmod-simp-ds389
-    ds389:
-      repo: https://github.com/jeannegreulich/pupmod-simp-ds389
-      branch: SIMP-9699
+    ds389: https://github.com/simp/pupmod-simp-ds389
     firewalld: https://github.com/simp/pupmod-voxpupuli-firewalld
     pki: https://github.com/simp/pupmod-simp-pki
     simplib: https://github.com/simp/pupmod-simp-simplib
@@ -19,6 +16,7 @@ fixtures:
     selinux: https://github.com/simp/pupmod-simp-selinux
 # for testing on the client
     simp_openldap: https://github.com/simp/pupmod-simp-simp_openldap
+    simp_options: https://github.com/simp/pupmod-simp-simp_options
   symlinks:
     simp_ds389: "#{source_dir}"
 

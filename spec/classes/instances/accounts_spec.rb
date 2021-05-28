@@ -90,7 +90,6 @@ describe 'simp_ds389::instances::accounts' do
             :tls_params =>  {
                'source' => '/my/source'
             },
-            :service_user => 'myuser',
             :base_dn => 'dc=test,dc=org',
             :bind_dn => 'cn=myhostAuth,ou=Hosts',
             :root_dn => 'cn=myDirectory_Manager',
