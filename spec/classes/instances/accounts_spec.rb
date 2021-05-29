@@ -9,11 +9,12 @@ describe 'simp_ds389::instances::accounts' do
           os_facts
         end
 
+        let(:exp_dir) { File.join(__dir__, 'expected') }
+
         context "simp_ds389 class without any parameters" do
           it { is_expected.to compile.with_all_deps }
           it { is_expected.to contain_ds389__instance('accounts')
             .with_listen_address('0.0.0.0')
-            .with_trusted_nets(['127.0.0.1/32'])
             .with_enable_tls(false)
             .with_port(389)
             .with_secure_port(636)
@@ -67,8 +68,6 @@ describe 'simp_ds389::instances::accounts' do
               :base_dn                 => 'dc=test,dc=org',
               :root_dn                 => 'cn=myDirectory_Manager',
               :root_pw                 => 'myrootpassword',
-              :bind_dn                 => 'cn=myhostAuth,ou=Hosts',
-              :bind_pw                 => 'mypassword',
               :listen_address          => '1.2.3.4',
               :enable_tls              => true,
               :firewall                => true,
@@ -76,14 +75,11 @@ describe 'simp_ds389::instances::accounts' do
               :port                    => 388,
               :secure_port             => 638,
               :tls_params              => { 'source' => '/my/source' },
-              :instance_params         => { 'service_user' => 'myuser' },
-              :users_group_id          => 666,
-              :administrators_group_id => 777
+              :instance_params         => { 'service_user' => 'myuser' }
           }}
 
           it { is_expected.to contain_ds389__instance('myaccounts').with({
             :listen_address => '1.2.3.4',
-            :trusted_nets => ['ALL'],
             :enable_tls => true,
             :port => 388,
             :secure_port => 638,
@@ -91,15 +87,29 @@ describe 'simp_ds389::instances::accounts' do
                'source' => '/my/source'
             },
             :base_dn => 'dc=test,dc=org',
-            :bind_dn => 'cn=myhostAuth,ou=Hosts',
             :root_dn => 'cn=myDirectory_Manager',
-            :root_pw => 'myrootpassword',
-            :bind_pw => 'mypassword',
+            :root_dn_password => 'myrootpassword',
             :service_user => 'myuser',
           })}
           it { is_expected.to contain_simp_firewalld__rule('Allow 389DS myaccounts instance')}
 
         end
+        context "with params set test bootstrap ldif" do
+          let(:params) {{
+              :base_dn                 => 'dc=test,dc=org',
+              :root_dn                 => 'cn=myDirectory_Manager',
+              :bind_dn                 => 'cn=myhostAuth,ou=Hosts,dc=test,dc=org',
+              :bind_pw                 => 'mypassword',
+              :users_group_id          => 666,
+              :administrators_group_id => 777
+          }}
+          let(:expected_bootstrap) { File.read("#{exp_dir}/accounts_bootstrap.txt")}
+          it { is_expected.to contain_ds389__instance('accounts').with({
+            :bootstrap_ldif_content => "#{expected_bootstrap}"
+          })}
+
+        end
+
       end
     end
   end
