@@ -1,5 +1,3 @@
-**FIXME**: Ensure the badges are correct and complete, then remove this line!
-
 [![License](https://img.shields.io/:license-apache-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/73/badge)](https://bestpractices.coreinfrastructure.org/projects/73)
 [![Puppet Forge](https://img.shields.io/puppetforge/v/simp/simp_ds389.svg)](https://forge.puppetlabs.com/simp/simp_ds389)
@@ -24,13 +22,13 @@
 
 ## Description
 
-This is a profile module used by SIMP to configure ds389  LDAP instances
-for use within the SIMP ecosystem. 
+This is a profile module used by SIMP to configure 389ds LDAP instances
+for use within the SIMP ecosystem.
 
 Currently it contains the following instances:
 
-* accounts - Configures an accounts LDAP instance with TLS enabled that will be used to
-     hold user accounts and groups and works with other simp modules.
+* accounts - Configures a TLS-enabled accounts LDAP instance that will be
+     used to hold user accounts and groups and works with other SIMP modules.
 
 
 ### This is a SIMP module
@@ -41,8 +39,6 @@ Puppet.
 
 If you find any issues, submit them to our [bug
 tracker](https://simp-project.atlassian.net/).
-
-**FIXME:** Ensure the *This is a SIMP module* section is correct and complete, then remove this line!
 
 This module is optimally designed for use within a larger SIMP ecosystem, but
 it can be used independently:
@@ -57,33 +53,29 @@ it can be used independently:
 
 ## Setup
 
-These instances are configured to work within a SIMP eco system.
+The 389ds instances in this module are configured to work within a SIMP eco system.
 
-Each Instance can be used seperately.  See the individual instance for instructions
+Each instance can be used separately.  See the individual instance for instructions
 on configuring it.
 
 ## Accounts Instance
 
 ### Description
-The accounts instance will set up a 389ds LDAP instance to used for user authentication.
 
+The accounts instance, `simp_ds389::instance::accounts`,  will set up a 389ds
+LDAP instance to be used for user authentication.
 
-* It installs an configures 389ds instance with TLS-enabled communication. It can use
-  both legacy TLS and STARTTLS.  It makes use of the pupmod-simp-pki to distribute
-  server certificates, making it easy to keep certificates up to date.
+* It installs an configures a 389ds instance with TLS-enabled communication.
+
+  * It can be configured for either TLS and STARTTLS.
 
 * It configures a default password policy the is compliant with most standards.
-
-* It configures a bind user  simp_options::ldap settings.  This bind user is
-  used by the pupmod-simp-sssd module  to configure clients to connect to the LDAP server.
-
+* It configures a bind user.
 * It configures 2 groups:
-  - 'user' for general users
-  - 'administrators' - used to allow administrator access to systems.  Pupmod-simp-simp
-    configures this access in the  simp::admins module.
+  - 'user' - group for general users
+  - 'administrators' - group to allow administrator access to systems.
 
-* It uses the pupmod-simp-simp_firewalld module to configure the firewall on the local system
-  to allow remote access restricting access to simp_options::trusted_nets.
+* It configures the firewall to allow access to the LDAP instance.
 
 ### Usage
 
@@ -92,18 +84,24 @@ simply include this module.
 
 include 'simp_ds389::instance::accounts'
 
-If passwords are not provided simplib::passgen will automatically generate them.
+If the root DN and bind DN password parameters are not explicitly set,
+they will be automatically generated using `simplib::passgen`.
 
 ## Reference
 
 Please refer to the inline documentation within each source file, or to
 [REFERENCE.md](./REFERENCE.md) for generated reference material.
 
+You may also be interested in the documentation for the
+[`simp/ds389`](https://github.com/simp/pupmod-simp-ds389) module, which
+is what this module uses to install 389ds and create 389ds instances.
+
 ## Limitations
 
-The web console is not configured.  You can install it manually if it is needed.
+The 389ds management console GUI is not configured.  You can install it
+manually if it is needed.
 
-At this time we have not  included setting up replication automatically.
+At this time replication is not configured automatically.
 
 SIMP Puppet modules are generally intended for use on Red Hat Enterprise Linux
 and compatible distributions, such as CentOS. Please see the
