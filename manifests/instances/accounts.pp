@@ -69,7 +69,7 @@ class simp_ds389::instances::accounts (
   String[2]                      $root_dn                 = 'cn=Directory_Manager',
   String[2]                      $root_pw                 = simplib::passgen('simp_ds389-rootdn_accounts', { 'length' => 64, 'complexity' => 0 }),
   String[2]                      $bind_dn                 = simplib::lookup('simp_options::ldap::bind_dn', { 'default_value'   => "cn=hostAuth,ou=Hosts,${base_dn}" }),
-  String[1]                      $bind_pw                 = simplib::lookup('simp_options::ldap::bind_hash', { 'default_value' => simplib::passgen("ds389_${instance_name}_bindpw", {'length' => 64})}),
+  String[1]                      $bind_pw                 = simplib::lookup('simp_options::ldap::bind_pw', { 'default_value' => simplib::passgen("ds389_${instance_name}_bindpw", {'length' => 64})}),
   Simplib::IP                    $listen_address          = '0.0.0.0',
   Variant[Boolean, Enum['simp']] $enable_tls              = simplib::lookup('simp_options::pki', { 'default_value' => false }),
   Boolean                        $firewall                = simplib::lookup('simp_options::firewall', { 'default_value' => false }),
