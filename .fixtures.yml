@@ -1,0 +1,22 @@
+# This file can be used to install module dependencies for unit testing
+# See https://github.com/puppetlabs/puppetlabs_spec_helper#using-fixtures for details
+---
+fixtures:
+  repositories:
+    compliance_markup: https://github.com/simp/pupmod-simp-compliance_markup
+    ds389: https://github.com/simp/pupmod-simp-ds389
+    firewalld: https://github.com/simp/pupmod-voxpupuli-firewalld
+    pki: https://github.com/simp/pupmod-simp-pki
+    simplib: https://github.com/simp/pupmod-simp-simplib
+    simp_firewalld: https://github.com/simp/pupmod-simp-simp_firewalld
+    stdlib: https://github.com/simp/puppetlabs-stdlib
+    vox_selinux:
+      repo: https://github.com/simp/pupmod-voxpupuli-selinux
+      branch: simp-master
+    selinux: https://github.com/simp/pupmod-simp-selinux
+# for testing on the client
+    simp_openldap: https://github.com/simp/pupmod-simp-simp_openldap
+    simp_options: https://github.com/simp/pupmod-simp-simp_options
+  symlinks:
+    simp_ds389: "#{source_dir}"
+

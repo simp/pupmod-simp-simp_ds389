@@ -1,5 +1,3 @@
-**FIXME**: Ensure the badges are correct and complete, then remove this line!
-
 [![License](https://img.shields.io/:license-apache-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/73/badge)](https://bestpractices.coreinfrastructure.org/projects/73)
 [![Puppet Forge](https://img.shields.io/puppetforge/v/simp/simp_ds389.svg)](https://forge.puppetlabs.com/simp/simp_ds389)
@@ -24,18 +22,14 @@
 
 ## Description
 
-**FIXME:** Ensure the *Description* section is correct and complete, then remove this line!
+This is a profile module used by SIMP to configure 389ds LDAP instances
+for use within the SIMP ecosystem.
 
-Start with a one- or two-sentence summary of what the module does and/or what
-problem it solves. This is your 30-second elevator pitch for your module.
-Consider including OS and Puppet version compatability, and any other
-information users will need to quickly assess the module's viability within
-their environment.
+Currently it contains the following instances:
 
-You can give more descriptive information in a second paragraph. This paragraph
-should answer the questions: "What does this module *do*?" and "Why would I use
-it?" If your module has a range of functionality (installation, configuration,
-management, etc.), this is the time to mention it.
+* accounts - Configures a TLS-enabled accounts LDAP instance that will be
+     used to hold user accounts and groups and works with other SIMP modules.
+
 
 ### This is a SIMP module
 
@@ -45,8 +39,6 @@ Puppet.
 
 If you find any issues, submit them to our [bug
 tracker](https://simp-project.atlassian.net/).
-
-**FIXME:** Ensure the *This is a SIMP module* section is correct and complete, then remove this line!
 
 This module is optimally designed for use within a larger SIMP ecosystem, but
 it can be used independently:
@@ -61,59 +53,55 @@ it can be used independently:
 
 ## Setup
 
-### What simp_ds389 affects
+The 389ds instances in this module are configured to work within a SIMP eco system.
 
-**FIXME:** Ensure the *What simp_ds389 affects* section is correct and complete, then remove this line!
+Each instance can be used separately.  See the individual instance for instructions
+on configuring it.
 
-If it's obvious what your module touches, you can skip this section. For
-example, folks can probably figure out that your mysql_instance module affects
-their MySQL instances.
+## Accounts Instance
 
-If there's more that they should know about, though, this is the place to
-mention:
+### Description
 
- * A list of files, packages, services, or operations that the module will
-   alter, impact, or execute.
- * Dependencies that your module automatically installs.
- * Warnings or other important notices.
+The accounts instance, `simp_ds389::instance::accounts`,  will set up a 389ds
+LDAP instance to be used for user authentication.
 
-### Setup Requirements **OPTIONAL**
+* It installs an configures a 389ds instance with TLS-enabled communication.
 
-**FIXME:** Ensure the *Setup Requirements* section is correct and complete, then remove this line!
+  * It can be configured for either TLS and STARTTLS.
 
-If your module requires anything extra before setting up (pluginsync enabled,
-etc.), mention it here.
+* It configures a default password policy the is compliant with most standards.
+* It configures a bind user.
+* It configures 2 groups:
+  - 'user' - group for general users
+  - 'administrators' - group to allow administrator access to systems.
 
-If your most recent release breaks compatibility or requires particular steps
-for upgrading, you might want to include an additional "Upgrading" section
-here.
+* It configures the firewall to allow access to the LDAP instance.
 
-### Beginning with simp_ds389
+### Usage
 
-**FIXME:** Ensure the *Beginning with simp_ds389* section is correct and complete, then remove this line!
+To set up a 389ds server to use for user authentication with in a SIMP ecosystem
+simply include this module.
 
-The very basic steps needed for a user to get the module up and running. This
-can include setup steps, if necessary, or it can be an example of the most
-basic use of the module.
+include 'simp_ds389::instance::accounts'
 
-## Usage
-
-**FIXME:** Ensure the *Usage* section is correct and complete, then remove this line!
-
-This section is where you describe how to customize, configure, and do the
-fancy stuff with your module here. It's especially helpful if you include usage
-examples and code samples for doing things with your module.
+If the root DN and bind DN password parameters are not explicitly set,
+they will be automatically generated using `simplib::passgen`.
 
 ## Reference
-
-**FIXME:** Ensure the *Reference* section is correct and complete, then remove this line!  If there is pre-generated YARD documentation for this module, ensure the text links to it and remove references to inline documentation.
 
 Please refer to the inline documentation within each source file, or to
 [REFERENCE.md](./REFERENCE.md) for generated reference material.
 
+You may also be interested in the documentation for the
+[`simp/ds389`](https://github.com/simp/pupmod-simp-ds389) module, which
+is what this module uses to install 389ds and create 389ds instances.
+
 ## Limitations
 
-**FIXME:** Ensure the *Limitations* section is correct and complete, then remove this line!
+The 389ds management console GUI is not configured.  You can install it
+manually if it is needed.
+
+At this time replication is not configured automatically.
 
 SIMP Puppet modules are generally intended for use on Red Hat Enterprise Linux
 and compatible distributions, such as CentOS. Please see the
@@ -121,8 +109,6 @@ and compatible distributions, such as CentOS. Please see the
 supported operating systems, Puppet versions, and module dependencies.
 
 ## Development
-
-**FIXME:** Ensure the *Development* section is correct and complete, then remove this line!
 
 Please read our [Contribution Guide](https://simp-doc.readthedocs.io/en/stable/contributors_guide/index.html).
 
@@ -139,8 +125,20 @@ tests run the following:
 bundle install
 bundle exec rake beaker:suites[default]
 ```
+Some environment variables may be useful:
 
-**FIXME:** Ensure the *Acceptance tests* section is correct and complete, including any module-specific instructions, and remove this line!
+```shell
+BEAKER_debug=true
+BEAKER_provision=no
+BEAKER_destroy=no
+BEAKER_use_fixtures_dir_for_modules=yes
+```
+
+* `BEAKER_debug`: show the commands being run on the STU and their output.
+* `BEAKER_destroy=no`: prevent the machine destruction after the tests finish so you can inspect the state.
+* `BEAKER_provision=no`: prevent the machine from being recreated. This can save a lot of time while you're writing the tests.
+* `BEAKER_use_fixtures_dir_for_modules=yes`: cause all module dependencies to be loaded from the `spec/fixtures/modules` directory, based on the contents of `.fixtures.yml`.  The contents of this directory are usually populated by `bundle exec rake spec_prep`.  This can be used to run acceptance tests to run on isolated networks.
+
 
 Please refer to the [SIMP Beaker Helpers documentation](https://github.com/simp/rubygem-simp-beaker-helpers/blob/master/README.md)
 for more information.

@@ -6,26 +6,12 @@
   end
 -%>
 HOSTS:
-  el8:
+  oel8:
     roles:
       - directory_server
       - default
     platform:   el-8-x86_64
-    box:        centos/8
-    hypervisor: <%= hypervisor %>
-
-  client-el8:
-    roles:
-      - client
-    platform:   el-8-x86_64
-    box:        centos/8
-    hypervisor: <%= hypervisor %>
-
-  client-el7:
-    roles:
-      - client
-    platform:   el-7-x86_64
-    box:        centos/7
+    box:        generic/oracle8
     hypervisor: <%= hypervisor %>
 
 CONFIG:

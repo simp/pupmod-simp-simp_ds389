@@ -1,0 +1,119 @@
+dn: dc=test,dc=org
+dc: test
+objectClass: top
+objectClass: domain
+aci: (targetattr = "aci")(version 3.0;acl "Admins can manage ACIs"; allow (write) groupdn="ldap:///cn=Directory Administrators,ou=Group,dc=test,dc=org";)
+aci: (target=ldap:///dc=test,dc=org)(targetattr=*)(version 3.0; acl "Directory Administrators"; allow(write) groupdn = "ldap:///cn=Directory Administrators,ou=Group,dc=test,dc=org";)
+
+dn: cn=Directory Administrators,dc=test,dc=org
+cn: Directory Administrators
+objectClass: top
+objectClass: groupOfUniqueNames
+uniqueMember: cn=myDirectory_Manager
+
+dn: ou=Hosts,dc=test,dc=org
+ou: Hosts
+objectClass: top
+objectClass: organizationalUnit
+
+# Custom Host-Account Password Policy Container
+dn: cn=nsPwPolicyContainer,ou=Hosts,dc=test,dc=org
+cn: nsPwPolicyContainer
+objectClass: top
+objectClass: nsContainer
+
+# Custom password policies for automated accounts
+dn: cn="cn=noExpire_noLockout,ou=Hosts,dc=test,dc=org",cn=nsPwPolicyContainer,ou=Hosts,dc=test,dc=org
+objectClass: top
+objectClass: extensibleObject
+objectClass: ldapSubentry
+objectClass: passwordPolicy
+passwordChange: off
+passwordMustChange: off
+passwordHistory: off
+passwordLockout: off
+passwordCheckSyntax: off
+
+dn: cn="cn=nsPwTemplateEntry,ou=Hosts,dc=test,dc=org",cn=nsPwPolicyContainer,ou=Hosts,dc=test,dc=org
+objectClass: top
+objectClass: extensibleObject
+objectClass: cosTemplate
+objectClass: ldapSubentry
+cosPriority: 1
+pwdPolicySubentry: cn="cn=noExpire_noLockout,ou=Hosts,dc=test,dc=org",cn=nsPwPolicyContainer,ou=Hosts,dc=test,dc=org
+
+dn: cn=noExpire_noLockout_cos,ou=Hosts,dc=test,dc=org
+objectClass: top
+objectClass: LDAPsubentry
+objectClass: cosSuperDefinition
+objectClass: cosPointerDefinition
+cosTemplateDn: cn="cn=nsPwTemplateEntry,ou=Hosts,dc=test,dc=org",cn=nsPwPolicyContainer,ou=Hosts,dc=test,dc=org
+cosAttribute: pwdPolicySubentry default operational
+
+dn: cn=myhostAuth,ou=Hosts,dc=test,dc=org
+cn: myhostAuth
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+objectClass: inetUser
+sn: Internal
+userPassword: mypassword
+
+dn: cn=localhost.localdomain,ou=Hosts,dc=test,dc=org
+objectClass: top
+objectClass: ipHost
+ipHostNumber: 127.0.0.1
+cn: localhost.localdomain
+cn: localhost
+
+dn: ou=Group,dc=test,dc=org
+ou: Group
+objectClass: top
+objectClass: organizationalUnit
+aci: (targetattr!="userpassword || aci")(version 3.0; acl "Enable Authenticated Group Read Access"; allow (read, search, compare) userdn="ldap:///all";)
+
+dn: ou=People,dc=test,dc=org
+ou: People
+objectClass: top
+objectClass: organizationalUnit
+aci: (targetattr!="userpassword || aci")(version 3.0; acl "Enable Authenticated People Read Access"; allow (read, search, compare) userdn="ldap:///all";)
+aci: (targetattr = "givenname || sn || cn || displayname || title || initials || loginshell || gecos || homephone || mobile || pager || facsimiletelephonenumber || telephonenumber || street || roomnumber || l || st || postalcode || manager || secretary || description || carlicense || labeleduri || inetuserhttpurl || seealso || employeetype  || businesscategory || ou")(version 3.0;acl "selfservice:User Self service";allow (write) userdn = "ldap:///self";)
+aci: (targetattr = "userpassword")(version 3.0; acl "selfservice:Self can write own password"; allow (write) userdn="ldap:///self";)
+aci: (targetattr = "usercertificate")(version 3.0;acl "selfservice:Users can manage their own X.509 certificates";allow (write) userdn = "ldap:///self";)
+
+dn: cn=users,ou=Group,dc=test,dc=org
+objectClass: groupOfUniqueNames
+objectClass: posixGroup
+objectClass: top
+cn: users
+gidNumber: 666
+
+dn: cn=administrators,ou=Group,dc=test,dc=org
+objectClass: groupOfUniqueNames
+objectClass: posixGroup
+objectClass: top
+cn: administrators
+gidNumber: 777
+
+dn: ou=SUDOers,dc=test,dc=org
+ou: People
+objectClass: top
+objectClass: organizationalUnit
+aci: (targetattr!="userpassword || aci")(version 3.0; acl "Enable Host Bind User Read Access"; allow (read, search, compare) userdn="ldap:///cn=myhostAuth,ou=Hosts,dc=test,dc=org";)
+
+dn: cn=defaults,ou=SUDOers,dc=test,dc=org
+cn: defaults
+objectClass: top
+objectClass: sudoRole
+description: Default sudo options
+sudoOrder: 1
+sudoOption: ignore_unknown_defaults
+sudoOption: env_reset
+sudoOption: ignore_dot
+sudoOption: ignore_local_sudoers
+sudoOption: requiretty
+sudoOption: !root_sudo
+sudoOption: use_pty
+sudoOption: lecture=once
+sudoOption: listpw=all
