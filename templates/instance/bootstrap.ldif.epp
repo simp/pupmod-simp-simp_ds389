@@ -92,6 +92,7 @@ aci: (targetattr = "usercertificate")(version 3.0;acl "selfservice:Users can man
 
 dn: cn=users,ou=Groups,<%= $base_dn %>
 objectClass: groupOfNames
+objectClass: groupOfUniqueNames
 objectClass: posixGroup
 objectClass: top
 objectClass: nsMemberOf
@@ -100,6 +101,7 @@ gidNumber: <%= $users_group_id %>
 
 dn: cn=administrators,ou=Groups,<%= $base_dn %>
 objectClass: groupOfUniqueNames
+objectClass: groupOfNames
 objectClass: posixGroup
 objectClass: top
 objectClass: nsMemberOf
