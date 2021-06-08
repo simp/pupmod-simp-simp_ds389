@@ -14,6 +14,20 @@ HOSTS:
     box:        generic/oracle8
     hypervisor: <%= hypervisor %>
 
+  client-oel8:
+    roles:
+      - client
+    platform:   el-8-x86_64
+    box:        generic/oracle8
+    hypervisor: <%= hypervisor %>
+
+  client-oel7:
+    roles:
+      - client
+    platform:   el-7-x86_64
+    box:        generic/oracle7
+    hypervisor: <%= hypervisor %>
+
 CONFIG:
   log_level: verbose
   type: aio

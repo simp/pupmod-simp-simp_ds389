@@ -93,7 +93,7 @@ class simp_ds389::instances::accounts (
 
 ) {
 
-  $_bootstrap_ldif_content = epp("${module_name}/instance/bootstrap.ldif.epp",
+  $_bootstrap_ldif_content = epp("${module_name}/instances/accounts/bootstrap.ldif.epp",
       {
         base_dn                 => $base_dn,
         root_dn                 => $root_dn,

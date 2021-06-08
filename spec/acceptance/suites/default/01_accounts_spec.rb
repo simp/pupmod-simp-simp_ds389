@@ -58,8 +58,8 @@ describe 'simp_ds389 class' do
         it 'should have the bind account and the users and administrators groups' do
           result = on(server, %(ldapsearch x -w "#{root_pw}" -D "#{root_dn}" -H ldap://#{server_fqdn}  -b "#{base_dn}")).output.strip
           expect(result).to include("#{bind_dn}")
-          expect(result).to include("cn=administrators,ou=Group,#{base_dn}")
-          expect(result).to include("cn=users,ou=Group,#{base_dn}")
+          expect(result).to include("cn=administrators,ou=Groups,#{base_dn}")
+          expect(result).to include("cn=users,ou=Groups,#{base_dn}")
         end
 
       end
