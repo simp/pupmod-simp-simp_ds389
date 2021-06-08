@@ -91,9 +91,10 @@ aci: (targetattr = "userpassword")(version 3.0; acl "selfservice:Self can write 
 aci: (targetattr = "usercertificate")(version 3.0;acl "selfservice:Users can manage their own X.509 certificates";allow (write) userdn = "ldap:///self";)
 
 dn: cn=users,ou=Groups,<%= $base_dn %>
-objectClass: groupOfUniqueNames
+objectClass: groupOfNames
 objectClass: posixGroup
 objectClass: top
+objectClass: nsMemberOf
 cn: users
 gidNumber: <%= $users_group_id %>
 
@@ -101,6 +102,7 @@ dn: cn=administrators,ou=Groups,<%= $base_dn %>
 objectClass: groupOfUniqueNames
 objectClass: posixGroup
 objectClass: top
+objectClass: nsMemberOf
 cn: administrators
 gidNumber: <%= $administrators_group_id %>
 
