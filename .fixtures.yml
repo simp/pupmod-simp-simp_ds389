@@ -6,6 +6,7 @@ fixtures:
     augeas_core:
       repo: https://github.com/simp/pupmod-puppetlabs-augeas_core.git
       puppet_version: ">= 6.0.0"
+    augeasproviders_core: https://github.com/simp/augeasproviders_core
     compliance_markup: https://github.com/simp/pupmod-simp-compliance_markup
     ds389: https://github.com/simp/pupmod-simp-ds389
     firewalld: https://github.com/simp/pupmod-voxpupuli-firewalld

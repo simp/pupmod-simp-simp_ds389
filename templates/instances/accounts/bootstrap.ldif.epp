@@ -10,8 +10,8 @@ dn: <%= $base_dn %>
 dc: <%= split(split($base_dn, ',')[0], /(?i:dc=)/)[-1] %>
 objectClass: top
 objectClass: domain
-aci: (targetattr = "aci")(version 3.0;acl "Admins can manage ACIs"; allow (write) groupdn="ldap:///cn=Directory Administrators,ou=Group,<%= $base_dn %>";)
-aci: (target=ldap:///<%= $base_dn %>)(targetattr=*)(version 3.0; acl "Directory Administrators"; allow(write) groupdn = "ldap:///cn=Directory Administrators,ou=Group,<%= $base_dn %>";)
+aci: (targetattr = "aci")(version 3.0;acl "Admins can manage ACIs"; allow (write) groupdn="ldap:///cn=Directory Administrators,ou=Groups,<%= $base_dn %>";)
+aci: (target=ldap:///<%= $base_dn %>)(targetattr=*)(version 3.0; acl "Directory Administrators"; allow(write) groupdn = "ldap:///cn=Directory Administrators,ou=Groups,<%= $base_dn %>";)
 
 dn: cn=Directory Administrators,<%= $base_dn %>
 cn: Directory Administrators
@@ -75,8 +75,8 @@ ipHostNumber: 127.0.0.1
 cn: localhost.localdomain
 cn: localhost
 
-dn: ou=Group,<%= $base_dn %>
-ou: Group
+dn: ou=Groups,<%= $base_dn %>
+ou: Groups
 objectClass: top
 objectClass: organizationalUnit
 aci: (targetattr!="userpassword || aci")(version 3.0; acl "Enable Authenticated Group Read Access"; allow (read, search, compare) userdn="ldap:///all";)
@@ -90,15 +90,17 @@ aci: (targetattr = "givenname || sn || cn || displayname || title || initials ||
 aci: (targetattr = "userpassword")(version 3.0; acl "selfservice:Self can write own password"; allow (write) userdn="ldap:///self";)
 aci: (targetattr = "usercertificate")(version 3.0;acl "selfservice:Users can manage their own X.509 certificates";allow (write) userdn = "ldap:///self";)
 
-dn: cn=users,ou=Group,<%= $base_dn %>
+dn: cn=users,ou=Groups,<%= $base_dn %>
 objectClass: groupOfUniqueNames
+objectClass: groupOfNames
 objectClass: posixGroup
 objectClass: top
 cn: users
 gidNumber: <%= $users_group_id %>
 
-dn: cn=administrators,ou=Group,<%= $base_dn %>
+dn: cn=administrators,ou=Groups,<%= $base_dn %>
 objectClass: groupOfUniqueNames
+objectClass: groupOfNames
 objectClass: posixGroup
 objectClass: top
 cn: administrators

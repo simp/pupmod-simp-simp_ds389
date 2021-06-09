@@ -79,13 +79,13 @@ describe 'simp_ds389 class' do
       it 'should have the bind account and the users and administrators groups' do
         result = on(server, %(ldapsearch -ZZ -x -w "#{root_pw}" -D "#{root_dn}" -H ldap://#{server_fqdn}  -b "#{base_dn}")).output.strip
         expect(result).to include("#{bind_dn}")
-        expect(result).to include("cn=administrators,ou=Group,#{base_dn}")
-        expect(result).to include("cn=users,ou=Group,#{base_dn}")
+        expect(result).to include("cn=administrators,ou=Groups,#{base_dn}")
+        expect(result).to include("cn=users,ou=Groups,#{base_dn}")
       end
 
       it 'should get results with the bind account' do
         result = on(server, %(ldapsearch -ZZ -x -w "#{bind_pw}" -D "#{bind_dn}" -H ldap://#{server_fqdn}  -b "#{base_dn}")).output.strip
-        expect(result).to include("cn=users,ou=Group,#{base_dn}")
+        expect(result).to include("cn=users,ou=Groups,#{base_dn}")
       end
     end
 
@@ -118,7 +118,7 @@ describe 'simp_ds389 class' do
         it 'should be able to connect using the bind DN and password' do
           # LDAP server parameters are set in /etc/openldap/ldap.conf by simp_openldap
           result = on(client, "ldapsearch -D #{bind_dn} -w #{bind_pw}")
-          expect(result.output).to match(/dn: cn=users,ou=Group,/)
+          expect(result.output).to match(/dn: cn=users,ou=Groups,/)
         end
 
       end

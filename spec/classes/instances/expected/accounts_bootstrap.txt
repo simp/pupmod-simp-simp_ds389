@@ -2,8 +2,8 @@ dn: dc=test,dc=org
 dc: test
 objectClass: top
 objectClass: domain
-aci: (targetattr = "aci")(version 3.0;acl "Admins can manage ACIs"; allow (write) groupdn="ldap:///cn=Directory Administrators,ou=Group,dc=test,dc=org";)
-aci: (target=ldap:///dc=test,dc=org)(targetattr=*)(version 3.0; acl "Directory Administrators"; allow(write) groupdn = "ldap:///cn=Directory Administrators,ou=Group,dc=test,dc=org";)
+aci: (targetattr = "aci")(version 3.0;acl "Admins can manage ACIs"; allow (write) groupdn="ldap:///cn=Directory Administrators,ou=Groups,dc=test,dc=org";)
+aci: (target=ldap:///dc=test,dc=org)(targetattr=*)(version 3.0; acl "Directory Administrators"; allow(write) groupdn = "ldap:///cn=Directory Administrators,ou=Groups,dc=test,dc=org";)
 
 dn: cn=Directory Administrators,dc=test,dc=org
 cn: Directory Administrators
@@ -67,8 +67,8 @@ ipHostNumber: 127.0.0.1
 cn: localhost.localdomain
 cn: localhost
 
-dn: ou=Group,dc=test,dc=org
-ou: Group
+dn: ou=Groups,dc=test,dc=org
+ou: Groups
 objectClass: top
 objectClass: organizationalUnit
 aci: (targetattr!="userpassword || aci")(version 3.0; acl "Enable Authenticated Group Read Access"; allow (read, search, compare) userdn="ldap:///all";)
@@ -82,15 +82,17 @@ aci: (targetattr = "givenname || sn || cn || displayname || title || initials ||
 aci: (targetattr = "userpassword")(version 3.0; acl "selfservice:Self can write own password"; allow (write) userdn="ldap:///self";)
 aci: (targetattr = "usercertificate")(version 3.0;acl "selfservice:Users can manage their own X.509 certificates";allow (write) userdn = "ldap:///self";)
 
-dn: cn=users,ou=Group,dc=test,dc=org
+dn: cn=users,ou=Groups,dc=test,dc=org
 objectClass: groupOfUniqueNames
+objectClass: groupOfNames
 objectClass: posixGroup
 objectClass: top
 cn: users
 gidNumber: 666
 
-dn: cn=administrators,ou=Group,dc=test,dc=org
+dn: cn=administrators,ou=Groups,dc=test,dc=org
 objectClass: groupOfUniqueNames
+objectClass: groupOfNames
 objectClass: posixGroup
 objectClass: top
 cn: administrators
