@@ -3,24 +3,22 @@
 ---
 fixtures:
   repositories:
-    augeas_core:
-      repo: https://github.com/simp/pupmod-puppetlabs-augeas_core.git
-      puppet_version: ">= 6.0.0"
-    augeasproviders_core: https://github.com/simp/augeasproviders_core
-    compliance_markup: https://github.com/simp/pupmod-simp-compliance_markup
-    ds389: https://github.com/simp/pupmod-simp-ds389
-    firewalld: https://github.com/simp/pupmod-voxpupuli-firewalld
-    pki: https://github.com/simp/pupmod-simp-pki
-    simplib: https://github.com/simp/pupmod-simp-simplib
-    simp_firewalld: https://github.com/simp/pupmod-simp-simp_firewalld
-    stdlib: https://github.com/simp/puppetlabs-stdlib
+    augeas_core:  https://github.com/simp/pupmod-puppetlabs-augeas_core.git
+    augeasproviders_core: https://github.com/simp/augeasproviders_core.git
+    compliance_markup: https://github.com/simp/pupmod-simp-compliance_markup.git
+    ds389: https://github.com/simp/pupmod-simp-ds389.git
+    firewalld: https://github.com/simp/pupmod-voxpupuli-firewalld.git
+    pki: https://github.com/simp/pupmod-simp-pki.git
+    simplib: https://github.com/simp/pupmod-simp-simplib.git
+    simp_firewalld: https://github.com/simp/pupmod-simp-simp_firewalld.git
+    stdlib: https://github.com/simp/puppetlabs-stdlib.git
     vox_selinux:
-      repo: https://github.com/simp/pupmod-voxpupuli-selinux
+      repo: https://github.com/simp/pupmod-voxpupuli-selinux.git
       branch: simp-master
-    selinux: https://github.com/simp/pupmod-simp-selinux
+    selinux: https://github.com/simp/pupmod-simp-selinux.git
 # for testing on the client
-    simp_openldap: https://github.com/simp/pupmod-simp-simp_openldap
-    simp_options: https://github.com/simp/pupmod-simp-simp_options
+    simp_openldap: https://github.com/simp/pupmod-simp-simp_openldap.git
+    simp_options: https://github.com/simp/pupmod-simp-simp_options.git
   symlinks:
     simp_ds389: "#{source_dir}"
 
