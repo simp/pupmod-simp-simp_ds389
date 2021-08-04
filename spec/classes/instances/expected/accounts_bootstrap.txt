@@ -99,7 +99,7 @@ cn: administrators
 gidNumber: 777
 
 dn: ou=SUDOers,dc=test,dc=org
-ou: People
+ou: SUDOers
 objectClass: top
 objectClass: organizationalUnit
 aci: (targetattr!="userpassword || aci")(version 3.0; acl "Enable Host Bind User Read Access"; allow (read, search, compare) userdn="ldap:///cn=myhostAuth,ou=Hosts,dc=test,dc=org";)
@@ -111,11 +111,20 @@ objectClass: sudoRole
 description: Default sudo options
 sudoOrder: 1
 sudoOption: ignore_unknown_defaults
-sudoOption: env_reset
-sudoOption: ignore_dot
-sudoOption: ignore_local_sudoers
-sudoOption: requiretty
-sudoOption: !root_sudo
-sudoOption: use_pty
-sudoOption: lecture=once
+sudoOption: !visiblepw
+sudoOption: always_set_home
+sudoOption: match_group_by_gid
+sudoOption: always_query_group_plugin
 sudoOption: listpw=all
+sudoOption: requiretty
+sudoOption: syslog=authpriv
+sudoOption: !root_sudo
+sudoOption: !umask
+sudoOption: secure_path = /usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+sudoOption: env_reset
+sudoOption: env_keep = "COLORS DISPLAY HOSTNAME HISTSIZE INPUTRC KDEDIR"
+sudoOption: env_keep += "LS_COLORS MAIL PS1 PS2 QTDIR USERNAME"
+sudoOption: env_keep += "LANG LC_ADDRESS LC_CTYPE LC_COLLATE LC_IDENTIFICATION"
+sudoOption: env_keep += "LC_MEASUREMENT LC_MESSAGES LC_MONETARY LC_NAME LC_NUMERIC"
+sudoOption: env_keep += "LC_PAPER LC_TELEPHONE LC_TIME LC_ALL LANGUAGE LINGUAS"
+sudoOption: env_keep += "XKB_CHARSET XAUTHORITY"

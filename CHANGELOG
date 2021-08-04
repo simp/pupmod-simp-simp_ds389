@@ -1,2 +1,8 @@
+* Wed Aug 04 2021 Trevor Vaughan <tvaughan@onyxpoint.com> - 0.1.1
+- Fixed the bootstrap template
+  - Set the SUDOers OU properly
+  - Removed the ignore_local_sudoers option from the sudo defaults for safety
+  - Added the usual batch of sudoers defaults
+
 * Mon May 17 2021 Jeanne Greulich <jeanne.greulich@onyxpoint.com> - 0.1.0
 - Initial release
