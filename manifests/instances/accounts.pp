@@ -72,7 +72,7 @@
 #
 class simp_ds389::instances::accounts (
   String[1]                      $instance_name           = 'accounts',
-  String[2]                      $base_dn                 = simplib::lookup('simp_options::ldap::base_dn', { 'default_value' => sprintf(simplib::ldap::domain_to_dn($facts['domain'], true)) }),
+  String[2]                      $base_dn                 = simplib::lookup('simp_options::ldap::base_dn', { 'default_value' => sprintf(simplib::ldap::domain_to_dn($facts.get('networking.domain'), true)) }),
   String[2]                      $root_dn                 = 'cn=Directory_Manager',
   String[2]                      $root_pw                 = simplib::passgen('simp_ds389-rootdn_accounts', { 'length' => 64, 'complexity' => 0 }),
   String[2]                      $bind_dn                 = simplib::lookup('simp_options::ldap::bind_dn', { 'default_value'   => "cn=hostAuth,ou=Hosts,${base_dn}" }),

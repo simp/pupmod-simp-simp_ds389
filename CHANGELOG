@@ -1,3 +1,6 @@
+* Mon Jul 17 2023 Chris Tessmer <chris.tessmer@onyxpoint.com> - 0.2.0
+- Add RockyLinux 8 support
+
 * Wed Aug 04 2021 Trevor Vaughan <tvaughan@onyxpoint.com> - 0.1.1
 - Fixed the bootstrap template
   - Set the SUDOers OU properly
