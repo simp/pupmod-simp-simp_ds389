@@ -6,11 +6,11 @@
 
 ### Classes
 
-* [`simp_ds389::instances::accounts`](#simp_ds389instancesaccounts): Create a 389ds instance with a common organizational LDIF for user accounts
+* [`simp_ds389::instances::accounts`](#simp_ds389--instances--accounts): Create a 389ds instance with a common organizational LDIF for user accounts
 
 ## Classes
 
-### <a name="simp_ds389instancesaccounts"></a>`simp_ds389::instances::accounts`
+### <a name="simp_ds389--instances--accounts"></a>`simp_ds389::instances::accounts`
 
 Create a 389ds instance with a common organizational LDIF for user accounts
 
@@ -18,25 +18,25 @@ Create a 389ds instance with a common organizational LDIF for user accounts
 
 The following parameters are available in the `simp_ds389::instances::accounts` class:
 
-* [`instance_name`](#instance_name)
-* [`base_dn`](#base_dn)
-* [`root_dn`](#root_dn)
-* [`root_pw`](#root_pw)
-* [`bind_dn`](#bind_dn)
-* [`bind_pw`](#bind_pw)
-* [`listen_address`](#listen_address)
-* [`enable_tls`](#enable_tls)
-* [`firewall`](#firewall)
-* [`trusted_nets`](#trusted_nets)
-* [`port`](#port)
-* [`secure_port`](#secure_port)
-* [`tls_params`](#tls_params)
-* [`instance_params`](#instance_params)
-* [`password_policy`](#password_policy)
-* [`users_group_id`](#users_group_id)
-* [`administrators_group_id`](#administrators_group_id)
+* [`instance_name`](#-simp_ds389--instances--accounts--instance_name)
+* [`base_dn`](#-simp_ds389--instances--accounts--base_dn)
+* [`root_dn`](#-simp_ds389--instances--accounts--root_dn)
+* [`root_pw`](#-simp_ds389--instances--accounts--root_pw)
+* [`bind_dn`](#-simp_ds389--instances--accounts--bind_dn)
+* [`bind_pw`](#-simp_ds389--instances--accounts--bind_pw)
+* [`listen_address`](#-simp_ds389--instances--accounts--listen_address)
+* [`enable_tls`](#-simp_ds389--instances--accounts--enable_tls)
+* [`firewall`](#-simp_ds389--instances--accounts--firewall)
+* [`trusted_nets`](#-simp_ds389--instances--accounts--trusted_nets)
+* [`port`](#-simp_ds389--instances--accounts--port)
+* [`secure_port`](#-simp_ds389--instances--accounts--secure_port)
+* [`tls_params`](#-simp_ds389--instances--accounts--tls_params)
+* [`instance_params`](#-simp_ds389--instances--accounts--instance_params)
+* [`password_policy`](#-simp_ds389--instances--accounts--password_policy)
+* [`users_group_id`](#-simp_ds389--instances--accounts--users_group_id)
+* [`administrators_group_id`](#-simp_ds389--instances--accounts--administrators_group_id)
 
-##### <a name="instance_name"></a>`instance_name`
+##### <a name="-simp_ds389--instances--accounts--instance_name"></a>`instance_name`
 
 Data type: `String[1]`
 
@@ -44,15 +44,15 @@ The unique name of the instance.
 
 Default value: `'accounts'`
 
-##### <a name="base_dn"></a>`base_dn`
+##### <a name="-simp_ds389--instances--accounts--base_dn"></a>`base_dn`
 
 Data type: `String[2]`
 
 The base Distinguished Name of the directory server.
 
-Default value: `simplib::lookup('simp_options::ldap::base_dn', { 'default_value' => sprintf(simplib::ldap::domain_to_dn($facts['domain'], true)) })`
+Default value: `simplib::lookup('simp_options::ldap::base_dn', { 'default_value' => sprintf(simplib::ldap::domain_to_dn($facts.get('networking.domain'), true)) })`
 
-##### <a name="root_dn"></a>`root_dn`
+##### <a name="-simp_ds389--instances--accounts--root_dn"></a>`root_dn`
 
 Data type: `String[2]`
 
@@ -63,7 +63,7 @@ The default administrator Distinguished Name for the directory server.
 
 Default value: `'cn=Directory_Manager'`
 
-##### <a name="root_pw"></a>`root_pw`
+##### <a name="-simp_ds389--instances--accounts--root_pw"></a>`root_pw`
 
 Data type: `String[2]`
 
@@ -74,7 +74,7 @@ The password for the the ``$root_dn``.
 
 Default value: `simplib::passgen('simp_ds389-rootdn_accounts', { 'length' => 64, 'complexity' => 0 })`
 
-##### <a name="bind_dn"></a>`bind_dn`
+##### <a name="-simp_ds389--instances--accounts--bind_dn"></a>`bind_dn`
 
 Data type: `String[2]`
 
@@ -82,7 +82,7 @@ The bind Distinguished Name of the directory server.
 
 Default value: `simplib::lookup('simp_options::ldap::bind_dn', { 'default_value'   => "cn=hostAuth,ou=Hosts,${base_dn}" })`
 
-##### <a name="bind_pw"></a>`bind_pw`
+##### <a name="-simp_ds389--instances--accounts--bind_pw"></a>`bind_pw`
 
 Data type: `String[1]`
 
@@ -90,7 +90,7 @@ The bind password.
 
 Default value: `simplib::lookup('simp_options::ldap::bind_pw', { 'default_value' => simplib::passgen("ds389_${instance_name}_bindpw", {'length' => 64})})`
 
-##### <a name="listen_address"></a>`listen_address`
+##### <a name="-simp_ds389--instances--accounts--listen_address"></a>`listen_address`
 
 Data type: `Simplib::IP`
 
@@ -98,7 +98,7 @@ The IP address upon which to listen.
 
 Default value: `'0.0.0.0'`
 
-##### <a name="enable_tls"></a>`enable_tls`
+##### <a name="-simp_ds389--instances--accounts--enable_tls"></a>`enable_tls`
 
 Data type: `Variant[Boolean, Enum['simp']]`
 
@@ -113,7 +113,7 @@ pki certificates.
 
 Default value: `simplib::lookup('simp_options::pki', { 'default_value' => false })`
 
-##### <a name="firewall"></a>`firewall`
+##### <a name="-simp_ds389--instances--accounts--firewall"></a>`firewall`
 
 Data type: `Boolean`
 
@@ -121,7 +121,7 @@ Whether to configure access through the firewall.
 
 Default value: `simplib::lookup('simp_options::firewall', { 'default_value' => false })`
 
-##### <a name="trusted_nets"></a>`trusted_nets`
+##### <a name="-simp_ds389--instances--accounts--trusted_nets"></a>`trusted_nets`
 
 Data type: `Simplib::Netlist`
 
@@ -129,7 +129,7 @@ Which networks to all access through the firewall.
 
 Default value: `simplib::lookup('simp_options::trusted_nets', {'default_value' => ['127.0.0.1/32'] })`
 
-##### <a name="port"></a>`port`
+##### <a name="-simp_ds389--instances--accounts--port"></a>`port`
 
 Data type: `Simplib::Port`
 
@@ -137,7 +137,7 @@ The port upon which to accept normal/STARTTLS connections
 
 Default value: `389`
 
-##### <a name="secure_port"></a>`secure_port`
+##### <a name="-simp_ds389--instances--accounts--secure_port"></a>`secure_port`
 
 Data type: `Simplib::Port`
 
@@ -145,7 +145,7 @@ The port upon which to accept LDAPS connections.
 
 Default value: `636`
 
-##### <a name="tls_params"></a>`tls_params`
+##### <a name="-simp_ds389--instances--accounts--tls_params"></a>`tls_params`
 
 Data type: `Hash`
 
@@ -153,7 +153,7 @@ Parameters to pass to the TLS module.
 
 Default value: `{}`
 
-##### <a name="instance_params"></a>`instance_params`
+##### <a name="-simp_ds389--instances--accounts--instance_params"></a>`instance_params`
 
 Data type: `Hash`
 
@@ -162,14 +162,14 @@ Any other arguments that you wish to pass through directly to the
 
 Default value: `{}`
 
-##### <a name="password_policy"></a>`password_policy`
+##### <a name="-simp_ds389--instances--accounts--password_policy"></a>`password_policy`
 
 Data type: `Ds389::ConfigItem`
 
 Settings for the password policy.  The defaults in the module data
 are set to meet most compliance standards.
 
-##### <a name="users_group_id"></a>`users_group_id`
+##### <a name="-simp_ds389--instances--accounts--users_group_id"></a>`users_group_id`
 
 Data type: `Integer[1]`
 
@@ -177,7 +177,7 @@ The group ID of the "users" group created in the install.
 
 Default value: `100`
 
-##### <a name="administrators_group_id"></a>`administrators_group_id`
+##### <a name="-simp_ds389--instances--accounts--administrators_group_id"></a>`administrators_group_id`
 
 Data type: `Integer[500]`
 
