@@ -37,15 +37,15 @@ describe 'simp_ds389 class' do
     let(:hieradata) do
       {
         'simp_options::pki' => true,
-     'simp_options::pki::source' => '/etc/pki/simp-testing/pki',
-     'simp_options::ldap::bind_dn' => bind_dn.to_s,
-     'simp_options::ldap::base_dn' => base_dn.to_s,
-     'simp_options::ldap::bind_hash' => '{SHA256}UPh9BmVFn/Pg2Fx/L+Qgf7pjmr7mjR7f0WOVhAlalRc=',
-     'simp_options::ldap::bind_pw' => bind_pw.to_s,
-     'simp_options::firewall' => true,
-     'simp_ds389::instances::accounts::root_pw' =>  root_pw.to_s,
-     'simp_options::trusted_nets' => [ 'ALL' ],
-     'simp_options::ldap::uri' => [ "ldaps://#{server_fqdn}" ]
+        'simp_options::pki::source' => '/etc/pki/simp-testing/pki',
+        'simp_options::ldap::bind_dn' => bind_dn.to_s,
+        'simp_options::ldap::base_dn' => base_dn.to_s,
+        'simp_options::ldap::bind_hash' => '{SHA256}UPh9BmVFn/Pg2Fx/L+Qgf7pjmr7mjR7f0WOVhAlalRc=',
+        'simp_options::ldap::bind_pw' => bind_pw.to_s,
+        'simp_options::firewall' => true,
+        'simp_ds389::instances::accounts::root_pw' =>  root_pw.to_s,
+        'simp_options::trusted_nets' => [ 'ALL' ],
+        'simp_options::ldap::uri' => [ "ldaps://#{server_fqdn}" ],
       }
     end
 
