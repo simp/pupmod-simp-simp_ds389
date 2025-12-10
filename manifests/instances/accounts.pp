@@ -76,11 +76,11 @@ class simp_ds389::instances::accounts (
   String[2]                      $root_dn                 = 'cn=Directory_Manager',
   String[2]                      $root_pw                 = simplib::passgen('simp_ds389-rootdn_accounts', { 'length' => 64, 'complexity' => 0 }),
   String[2]                      $bind_dn                 = simplib::lookup('simp_options::ldap::bind_dn', { 'default_value'   => "cn=hostAuth,ou=Hosts,${base_dn}" }),
-  String[1]                      $bind_pw                 = simplib::lookup('simp_options::ldap::bind_pw', { 'default_value' => simplib::passgen("ds389_${instance_name}_bindpw", {'length' => 64})}),
+  String[1]                      $bind_pw                 = simplib::lookup('simp_options::ldap::bind_pw', { 'default_value' => simplib::passgen("ds389_${instance_name}_bindpw", { 'length' => 64 }) }),
   Simplib::IP                    $listen_address          = '0.0.0.0',
   Variant[Boolean, Enum['simp']] $enable_tls              = simplib::lookup('simp_options::pki', { 'default_value' => false }),
   Boolean                        $firewall                = simplib::lookup('simp_options::firewall', { 'default_value' => false }),
-  Simplib::Netlist               $trusted_nets            = simplib::lookup('simp_options::trusted_nets', {'default_value' => ['127.0.0.1/32'] }),
+  Simplib::Netlist               $trusted_nets            = simplib::lookup('simp_options::trusted_nets', { 'default_value' => ['127.0.0.1/32'] }),
   Simplib::Port                  $port                    = 389,
   Simplib::Port                  $secure_port             = 636,
   Hash                           $tls_params              = {},
@@ -92,17 +92,16 @@ class simp_ds389::instances::accounts (
   Integer[500]                   $administrators_group_id = 700,
 
 ) {
-
   $_bootstrap_ldif_content = epp("${module_name}/instances/accounts/bootstrap.ldif.epp",
-      {
-        base_dn                 => $base_dn,
-        root_dn                 => $root_dn,
-        bind_dn                 => $bind_dn,
-        bind_pw                 => $bind_pw,
-        users_group_id          => $users_group_id,
-        administrators_group_id => $administrators_group_id
-      }
-    )
+    {
+      base_dn                 => $base_dn,
+      root_dn                 => $root_dn,
+      bind_dn                 => $bind_dn,
+      bind_pw                 => $bind_pw,
+      users_group_id          => $users_group_id,
+      administrators_group_id => $administrators_group_id
+    }
+  )
 
   ds389::instance { $instance_name:
     base_dn                => $base_dn,
@@ -115,7 +114,7 @@ class simp_ds389::instances::accounts (
     tls_params             => $tls_params,
     bootstrap_ldif_content => $_bootstrap_ldif_content,
     password_policy        => $password_policy,
-    *                      => $instance_params
+    *                      => $instance_params,
   }
 
   if $firewall {
@@ -128,8 +127,7 @@ class simp_ds389::instances::accounts (
       trusted_nets => $trusted_nets,
       apply_to     => 'all',
       dports       => $_ports,
-      protocol     => 'tcp'
+      protocol     => 'tcp',
     }
   }
-
 }
