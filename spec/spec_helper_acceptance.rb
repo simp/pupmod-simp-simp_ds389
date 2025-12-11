@@ -17,12 +17,12 @@ end
 
 RSpec.configure do |c|
   # Configure retry to get around timing issues in tests
-  config.retry_callback = proc do |ex|
+  c.retry_callback = proc do |ex|
     puts "Retrying #{ex.full_description}..."
     sleep 3
   end
 
-  config.default_retry_count = 3 if ENV['RSPEC_RETRY']
+  c.default_retry_count = 3 if ENV['RSPEC_RETRY']
 
   # ensure that environment OS is ready on each host
   fix_errata_on hosts
