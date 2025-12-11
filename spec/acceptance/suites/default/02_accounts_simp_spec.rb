@@ -37,6 +37,10 @@ describe 'simp_ds389 class' do
 
     let(:hieradata) do
       {
+        'pki::certificate' => {
+          'key_length' => 2048,
+          'digest' => 'sha256'
+        },
         'simp_ds389::instances::accounts::tls_params' => {
           'source' => pki_source.to_s,
         },
@@ -121,7 +125,7 @@ describe 'simp_ds389 class' do
         end
         it 'is able to connect using the bind DN and password' do
           # LDAP server parameters are set in /etc/openldap/ldap.conf by simp_openldap
-          result = on(client, "LDAPTLS_REQCERT=never ldapsearch -D #{bind_dn} -w #{bind_pw} -H ldaps://#{server_fqdn}")
+          result = on(client, "ldapsearch -D #{bind_dn} -w #{bind_pw} -H ldaps://#{server_fqdn}")
           expect(result.output).to match(%r{dn: cn=users,ou=Groups,})
         end
       end
