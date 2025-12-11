@@ -121,7 +121,7 @@ describe 'simp_ds389 class' do
         end
         it 'is able to connect using the bind DN and password' do
           # LDAP server parameters are set in /etc/openldap/ldap.conf by simp_openldap
-          result = on(client, "ldapsearch -D #{bind_dn} -w #{bind_pw}")
+          result = on(client, "ldapsearch -D #{bind_dn} -w #{bind_pw} -H ldap://#{server_fqdn}")
           expect(result.output).to match(%r{dn: cn=users,ou=Groups,})
         end
       end
