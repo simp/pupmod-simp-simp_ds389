@@ -2,6 +2,7 @@ require 'beaker-rspec'
 require 'tmpdir'
 require 'yaml'
 require 'simp/beaker_helpers'
+require 'rspec/retry'
 include Simp::BeakerHelpers
 
 unless ENV['BEAKER_provision'] == 'no'
