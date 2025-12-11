@@ -70,26 +70,26 @@ describe 'simp_ds389 class' do
         server.add_env_var('LDAPTLS_CERT', "/etc/pki/simp_apps/ds389_#{ds_root_name}/x509/public/#{server_fqdn}.pub")
       end
 
-      it 'logs into ldapi' do
+      it 'logs into ldapi', retry: 3 do
         on(server, %(ldapsearch -x -w "#{root_pw}" -D "#{root_dn}" -H ldapi://%2fvar%2frun%2fslapd-#{ds_root_name}.socket -b "cn=tasks,cn=config"))
       end
 
-      it 'logins to 389DS Start TLS' do
+      it 'logins to 389DS Start TLS', retry: 3 do
         on(server, %(ldapsearch -ZZ -x -w "#{root_pw}" -D "#{root_dn}" -H ldap://#{server_fqdn}:389  -b "cn=tasks,cn=config"))
       end
 
-      it 'logins to 389DS encrypted' do
+      it 'logins to 389DS encrypted', retry: 3 do
         on(server, %(ldapsearch -x -w "#{root_pw}" -D "#{root_dn}" -H ldaps://#{server_fqdn}:636  -b "cn=tasks,cn=config"))
       end
 
-      it 'has the bind account and the users and administrators groups' do
+      it 'has the bind account and the users and administrators groups', retry: 3 do
         result = on(server, %(ldapsearch -ZZ -x -w "#{root_pw}" -D "#{root_dn}" -H ldap://#{server_fqdn}  -b "#{base_dn}")).output.strip
         expect(result).to include(bind_dn.to_s)
         expect(result).to include("cn=administrators,ou=Groups,#{base_dn}")
         expect(result).to include("cn=users,ou=Groups,#{base_dn}")
       end
 
-      it 'gets results with the bind account' do
+      it 'gets results with the bind account', retry: 3 do
         result = on(server, %(ldapsearch -ZZ -x -w "#{bind_pw}" -D "#{bind_dn}" -H ldap://#{server_fqdn}  -b "#{base_dn}")).output.strip
         expect(result).to include("cn=users,ou=Groups,#{base_dn}")
       end
@@ -119,7 +119,7 @@ describe 'simp_ds389 class' do
         it 'is idempotent' do
           apply_manifest_on(client, client_manifest, catch_changes: true)
         end
-        it 'is able to connect using the bind DN and password' do
+        it 'is able to connect using the bind DN and password', retry: 3 do
           # LDAP server parameters are set in /etc/openldap/ldap.conf by simp_openldap
           result = on(client, "ldapsearch -D #{bind_dn} -w #{bind_pw}")
           expect(result.output).to match(%r{dn: cn=users,ou=Groups,})

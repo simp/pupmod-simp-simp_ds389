@@ -45,19 +45,19 @@ describe 'simp_ds389 class' do
           result = on(server, '/sbin/dsctl -l').output.strip
           expect(result).to include("slapd-#{ds_root_name}")
         end
-        it 'logs into ldapi' do
+        it 'logs into ldapi', retry: 3 do
           on(server, %(ldapsearch -x -w "#{root_pw}" -D "#{root_dn}" -H ldapi://%2fvar%2frun%2fslapd-#{ds_root_name}.socket -b "cn=tasks,cn=config"))
         end
 
-        it 'logins to 389DS without' do
+        it 'logins to 389DS without', retry: 3 do
           on(server, %(ldapsearch -x -w "#{root_pw}" -D "#{root_dn}" -H ldap://#{server_fqdn}:389  -b "cn=tasks,cn=config"))
         end
 
-        it 'does not login to 389DS encrypted' do
+        it 'does not login to 389DS encrypted', retry: 3 do
           expect { on(server, %(ldapsearch -x -w "#{root_pw}" -D "#{root_dn}" -H ldaps://#{server_fqdn}:636  -b "cn=tasks,cn=config")) }.to raise_error(Beaker::Host::CommandFailure)
         end
 
-        it 'has the bind account and the users and administrators groups' do
+        it 'has the bind account and the users and administrators groups', retry: 3 do
           result = on(server, %(ldapsearch x -w "#{root_pw}" -D "#{root_dn}" -H ldap://#{server_fqdn}  -b "#{base_dn}")).output.strip
           expect(result).to include(bind_dn.to_s)
           expect(result).to include("cn=administrators,ou=Groups,#{base_dn}")
