@@ -2,7 +2,6 @@ require 'beaker-rspec'
 require 'tmpdir'
 require 'yaml'
 require 'simp/beaker_helpers'
-require 'rspec/retry'
 include Simp::BeakerHelpers
 
 unless ENV['BEAKER_provision'] == 'no'
@@ -17,14 +16,6 @@ unless ENV['BEAKER_provision'] == 'no'
 end
 
 RSpec.configure do |c|
-  # Configure retry to get around timing issues in tests
-  c.retry_callback = proc do |ex|
-    puts "Retrying #{ex.full_description}..."
-    sleep 3
-  end
-
-  c.default_retry_count = 3 if ENV['RSPEC_RETRY']
-
   # ensure that environment OS is ready on each host
   fix_errata_on hosts
 

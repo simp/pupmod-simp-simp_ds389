@@ -32,7 +32,6 @@ group :test do
   gem 'rake'
   gem 'rspec'
   gem 'rspec-puppet'
-  gem 'rspec-retry'
   # renovate: datasource=rubygems versioning=ruby
   gem 'simp-rake-helpers', ENV.fetch('SIMP_RAKE_HELPERS_VERSION', '~> 5.24.0')
   # renovate: datasource=rubygems versioning=ruby
