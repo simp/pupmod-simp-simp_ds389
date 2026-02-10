@@ -124,6 +124,9 @@ describe 'simp_ds389 class' do
           apply_manifest_on(client, client_manifest, catch_changes: true)
         end
         it 'is able to connect using the bind DN and password' do
+          # Wait for LDAP server to be ready on port 636 (LDAPS)
+          wait_for_port(server, 636)
+
           # LDAP server parameters are set in /etc/openldap/ldap.conf by simp_openldap
           result = on(client, "ldapsearch -D #{bind_dn} -w #{bind_pw} -H ldaps://#{server_fqdn}")
           expect(result.output).to match(%r{dn: cn=users,ou=Groups,})
