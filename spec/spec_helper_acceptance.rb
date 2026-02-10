@@ -5,19 +5,15 @@ require 'simp/beaker_helpers'
 include Simp::BeakerHelpers
 
 # Helper method to wait for a port to be accessible
-def wait_for_port(host, port, timeout: 120)
-  on(host, 'dnf install -y netcat', acceptable_exit_codes: [0, 1]) # netcat may already be installed, so allow exit code 1
-  start_time = Time.now
+def wait_for_tcp_from(src_host, dst_host, port, timeout: 120)
+  start = Time.now
   loop do
-    begin
-      # Try to connect to the port
-      result = on(host, "nc -z localhost #{port}", acceptable_exit_codes: [0, 1])
-      return true if result.exit_code == 0
-    rescue StandardError
-      # Connection failed, continue retrying
-    end
+    cmd = %(timeout 5 bash -lc "echo | openssl s_client -connect #{dst_host}:#{port} -servername #{dst_host} >/dev/null 2>&1")
+    result = on(src_host, cmd, acceptable_exit_codes: [0, 1, 124])
 
-    raise "Port #{port} not open on #{host} after #{timeout} seconds" if Time.now - start_time > timeout
+    return true if result.exit_code == 0
+
+    raise "Port #{port} not reachable from #{src_host} to #{dst_host} after #{timeout}s" if (Time.now - start) > timeout
     sleep 2
   end
 end
