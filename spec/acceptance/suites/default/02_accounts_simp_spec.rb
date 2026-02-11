@@ -3,6 +3,11 @@ require 'spec_helper_acceptance'
 test_name 'simp_ds389 class'
 
 describe 'simp_ds389 class' do
+  before(:all) do
+    # Ensure that /etc/hosts is correct on all hosts.
+    update_etc_hosts(hosts)
+  end
+
   #
   #  This test sets up a 389ds server using TLS.  It sets  data using simp_options
   #  settings in hiera to mimic what would happen if simp_cli were run.
