@@ -12,10 +12,10 @@ describe 'simp_ds389 class' do
          include 'simp_ds389::instances::accounts'
         EOS
       end
-      let(:server_fqdn) { fact_on(server, 'fqdn') }
+      let(:server_fqdn) { fact_on(server, 'networking.fqdn') }
       let(:root_pw) { 's00perSekr!tP@ssw0rd' }
       # default base_dn should be domain
-      let(:domain) { fact_on(server, 'domain') }
+      let(:domain) { fact_on(server, 'networking.domain') }
 
       let(:base_dn) { 'dc=' + domain.to_s.split('.').join(',dc=') }
 

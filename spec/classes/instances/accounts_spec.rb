@@ -77,7 +77,6 @@ describe 'simp_ds389::instances::accounts' do
               port: 388,
               secure_port: 638,
               tls_params: { 'source' => '/my/source' },
-              instance_params: { 'service_user' => 'myuser' },
             }
           end
 
@@ -94,7 +93,6 @@ describe 'simp_ds389::instances::accounts' do
                 base_dn: 'dc=test,dc=org',
                 root_dn: 'cn=myDirectory_Manager',
                 root_dn_password: 'myrootpassword',
-                service_user: 'myuser',
               )
           end
           it { is_expected.to contain_simp_firewalld__rule('Allow 389DS myaccounts instance') }

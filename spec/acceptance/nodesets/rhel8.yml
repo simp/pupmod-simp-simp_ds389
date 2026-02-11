@@ -1,0 +1,26 @@
+---
+HOSTS:
+  server-el8.simp.beaker:
+    roles:
+    - directory_server
+    - default
+    - el8
+    platform: el-8-x86_64
+    box: generic/rhel8
+    hypervisor: "<%= ENV.fetch('BEAKER_HYPERVISOR', 'vagrant') %>"
+    family: rhel-cloud/rhel-8
+    gce_machine_type: n1-standard-2
+  client-el8.simp.beaker:
+    roles:
+    - directory_server
+    - el8
+    platform: el-8-x86_64
+    box: generic/rhel8
+    hypervisor: "<%= ENV.fetch('BEAKER_HYPERVISOR', 'vagrant') %>"
+    family: rhel-cloud/rhel-8
+    gce_machine_type: n1-standard-2
+CONFIG:
+  validate: false
+  log_level: verbose
+  type: aio
+  puppet_collection: <%= ENV.fetch('BEAKER_PUPPET_COLLECTION', '~') %>

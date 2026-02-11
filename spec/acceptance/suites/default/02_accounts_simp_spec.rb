@@ -3,6 +3,11 @@ require 'spec_helper_acceptance'
 test_name 'simp_ds389 class'
 
 describe 'simp_ds389 class' do
+  before(:all) do
+    # Ensure that /etc/hosts is correct on all hosts.
+    update_etc_hosts(hosts)
+  end
+
   #
   #  This test sets up a 389ds server using TLS.  It sets  data using simp_options
   #  settings in hiera to mimic what would happen if simp_cli were run.
@@ -26,9 +31,10 @@ describe 'simp_ds389 class' do
        }
       EOS
     end
-    let(:server_fqdn) { fact_on(server, 'fqdn') }
+    let(:server_fqdn) { fact_on(server, 'networking.fqdn') }
     let(:root_pw) { 's00perSekr!tP@ssw0rd' }
     let(:root_dn) { 'cn=Directory_Manager' }
+    let(:pki_source) { '/etc/pki/simp-testing/pki' }
     let(:ds_root_name) { 'accounts' }
     let(:base_dn) { 'dc=test,dc=org' }
     let(:bind_dn) { "cn=myhostAuth,ou=Hosts,#{base_dn}" }
@@ -36,8 +42,15 @@ describe 'simp_ds389 class' do
 
     let(:hieradata) do
       {
+        'pki::certificate' => {
+          'key_length' => 2048,
+          'digest' => 'sha256'
+        },
+        'simp_ds389::instances::accounts::tls_params' => {
+          'source' => pki_source.to_s,
+        },
         'simp_options::pki' => true,
-        'simp_options::pki::source' => '/etc/pki/simp-testing/pki',
+        'simp_options::pki::source' => pki_source.to_s,
         'simp_options::ldap::bind_dn' => bind_dn.to_s,
         'simp_options::ldap::base_dn' => base_dn.to_s,
         'simp_options::ldap::bind_hash' => '{SHA256}UPh9BmVFn/Pg2Fx/L+Qgf7pjmr7mjR7f0WOVhAlalRc=',
@@ -116,8 +129,11 @@ describe 'simp_ds389 class' do
           apply_manifest_on(client, client_manifest, catch_changes: true)
         end
         it 'is able to connect using the bind DN and password' do
+          # Wait for client to be able to connect to the server on the ldaps port.
+          wait_for_tcp_from(client, server_fqdn, 636)
+
           # LDAP server parameters are set in /etc/openldap/ldap.conf by simp_openldap
-          result = on(client, "ldapsearch -D #{bind_dn} -w #{bind_pw}")
+          result = on(client, "ldapsearch -D #{bind_dn} -w #{bind_pw} -H ldaps://#{server_fqdn}")
           expect(result.output).to match(%r{dn: cn=users,ou=Groups,})
         end
       end

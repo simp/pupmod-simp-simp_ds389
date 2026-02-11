@@ -88,7 +88,7 @@ Data type: `String[1]`
 
 The bind password.
 
-Default value: `simplib::lookup('simp_options::ldap::bind_pw', { 'default_value' => simplib::passgen("ds389_${instance_name}_bindpw", {'length' => 64})})`
+Default value: `simplib::lookup('simp_options::ldap::bind_pw', { 'default_value' => simplib::passgen("ds389_${instance_name}_bindpw", { 'length' => 64 }) })`
 
 ##### <a name="-simp_ds389--instances--accounts--listen_address"></a>`listen_address`
 
@@ -127,7 +127,7 @@ Data type: `Simplib::Netlist`
 
 Which networks to all access through the firewall.
 
-Default value: `simplib::lookup('simp_options::trusted_nets', {'default_value' => ['127.0.0.1/32'] })`
+Default value: `simplib::lookup('simp_options::trusted_nets', { 'default_value' => ['127.0.0.1/32'] })`
 
 ##### <a name="-simp_ds389--instances--accounts--port"></a>`port`
 
