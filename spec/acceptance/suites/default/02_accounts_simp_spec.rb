@@ -26,7 +26,7 @@ describe 'simp_ds389 class' do
        }
       EOS
     end
-    let(:server_fqdn) { fact_on(server, 'fqdn') }
+    let(:server_fqdn) { fact_on(server, 'networking.fqdn') }
     let(:root_pw) { 's00perSekr!tP@ssw0rd' }
     let(:root_dn) { 'cn=Directory_Manager' }
     let(:pki_source) { '/etc/pki/simp-testing/pki' }
