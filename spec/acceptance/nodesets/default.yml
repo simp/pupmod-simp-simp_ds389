@@ -1,33 +1,29 @@
 ---
 HOSTS:
-  el8:
+  server-el10:
     roles:
-    - directory_server
+    - el10
     - default
-    platform: el-8-x86_64
-    box: generic/centos8
+    - directory_server
+    platform: el-10-x86_64
+    box: rockylinux/10
     hypervisor: "<%= ENV.fetch('BEAKER_HYPERVISOR', 'vagrant') %>"
-    family: centos-cloud/centos-stream-8
+    vagrant_memsize: 2048
+    vagrant_cpus: 2
+    family: rocky-linux-cloud/rocky-linux-10
     gce_machine_type: n1-standard-2
-  client-el8:
+  client-el10:
     roles:
+    - el10
     - client
-    platform: el-8-x86_64
-    box: generic/centos8
+    platform: el-10-x86_64
+    box: rockylinux/10
     hypervisor: "<%= ENV.fetch('BEAKER_HYPERVISOR', 'vagrant') %>"
-    family: centos-cloud/centos-stream-8
-    gce_machine_type: n1-standard-2
-  client-el7:
-    roles:
-    - client
-    platform: el-7-x86_64
-    box: centos/7
-    hypervisor: "<%= ENV.fetch('BEAKER_HYPERVISOR', 'vagrant') %>"
-    family: centos-cloud/centos-7
+    vagrant_memsize: 2048
+    vagrant_cpus: 2
+    family: rocky-linux-cloud/rocky-linux-10
     gce_machine_type: n1-standard-2
 CONFIG:
   log_level: verbose
   type: aio
-  vagrant_memsize: 512
-  vagrant_cpus: 1
-  puppet_collection: "<%= ENV.fetch('BEAKER_PUPPET_COLLECTION', 'puppet7') %>"
+  puppet_collection: "<%= ENV.fetch('BEAKER_PUPPET_COLLECTION', 'openvox8') %>"
