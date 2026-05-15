@@ -6,7 +6,8 @@ HOSTS:
     - default
     - el8
     platform: el-8-x86_64
-    box: generic/oracle8
+    box: oraclelinux/8
+    box_url: https://oracle.github.io/vagrant-projects/boxes/oraclelinux/8.json
     hypervisor: "<%= ENV.fetch('BEAKER_HYPERVISOR', 'vagrant') %>"
     family: sicura-image-build/oracle-linux-8
     gce_machine_type: n1-standard-2
@@ -15,7 +16,8 @@ HOSTS:
     - client
     - el8
     platform: el-8-x86_64
-    box: generic/oracle8
+    box: oraclelinux/8
+    box_url: https://oracle.github.io/vagrant-projects/boxes/oraclelinux/8.json
     hypervisor: "<%= ENV.fetch('BEAKER_HYPERVISOR', 'vagrant') %>"
     family: sicura-image-build/oracle-linux-8
     gce_machine_type: n1-standard-2
