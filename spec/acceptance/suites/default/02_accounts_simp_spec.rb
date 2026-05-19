@@ -108,7 +108,6 @@ describe 'simp_ds389 class' do
       context "#{client} connecting to #{server}" do
         let(:client_manifest) do
           <<-EOS
-         include 'simp_openldap::client'
 
          #let vagrant ssh in
          simp_firewalld::rule { "Allow ssh":
@@ -132,7 +131,6 @@ describe 'simp_ds389 class' do
           # Wait for client to be able to connect to the server on the ldaps port.
           wait_for_tcp_from(client, server_fqdn, 636)
 
-          # LDAP server parameters are set in /etc/openldap/ldap.conf by simp_openldap
           result = on(client, "ldapsearch -D #{bind_dn} -w #{bind_pw} -H ldaps://#{server_fqdn}")
           expect(result.output).to match(%r{dn: cn=users,ou=Groups,})
         end
