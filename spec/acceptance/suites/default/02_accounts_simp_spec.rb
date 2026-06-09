@@ -44,7 +44,7 @@ describe 'simp_ds389 class' do
       {
         'pki::certificate' => {
           'key_length' => 2048,
-          'digest' => 'sha256'
+          'digest' => 'sha256',
         },
         'simp_ds389::instances::accounts::tls_params' => {
           'source' => pki_source.to_s,
