@@ -1,12 +1,12 @@
 {
   "name": "simp-simp_ds389",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "author": "simp",
   "summary": "Profile module for SIMP DS389 server",
   "license": "Apache-2.0",
   "source": "https://github.com/simp/pupmod-simp-simp_ds389",
   "project_page": "https://github.com/simp/pupmod-simp-simp_ds389",
-  "issues_url": "https://simp-project.atlassian.net",
+  "issues_url": "https://github.com/simp/pupmod-simp-simp_ds389/issues",
   "tags": [
     "simp",
     "simp_ds389"
@@ -14,7 +14,7 @@
   "dependencies": [
     {
       "name": "simp/ds389",
-      "version_requirement": ">= 1.0.0 < 2.0.0"
+      "version_requirement": ">= 1.0.0 < 3.0.0"
     },
     {
       "name": "simp/simplib",
@@ -72,8 +72,8 @@
   ],
   "requirements": [
     {
-      "name": "puppet",
-      "version_requirement": ">= 7.0.0 < 9.0.0"
+      "name": "openvox",
+      "version_requirement": ">= 8.0.0 < 9.0.0"
     }
   ]
 }
