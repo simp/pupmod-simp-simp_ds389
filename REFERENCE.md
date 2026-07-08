@@ -169,6 +169,8 @@ Data type: `Ds389::ConfigItem`
 Settings for the password policy.  The defaults in the module data
 are set to meet most compliance standards.
 
+Default value: `{ 'nsslapd-pwpolicy-local' => 'on', 'passwordChange' => 'on', 'passwordMustChange' => 'on', 'passwordHistory' => 'on', 'passwordInHistory' => 6, 'passwordTrackUpdateTime' => 'on', 'passwordWarning' => 86400, 'passwordIsGlobalPolicy' => 'on', 'passwordExp' => 'on', 'passwordMaxAge' => 7776000, 'passwordMinAge' => 1800, 'passwordGraceLimit' => 0, 'passwordLockout' => 'on', 'passwordUnlock' => 'on', 'passwordLockoutDuration' => 900, 'passwordMaxFailure' => 3, 'passwordResetFailureCount' => 600, 'passwordCheckSyntax' => 'on', 'passwordMinLength' => 15, 'passwordMinDigits' => 1, 'passwordMinAlphas' => 1, 'passwordMinUppers' => 1, 'passwordMinLowers' => 1, 'passwordMinSpecials' => 1, 'passwordMaxRepeats' => 3, 'passwordMinCategories' => 3, 'passwordMinTokenLength' => 3, 'nsslapd-pwpolicy-inherit-global' => 'on', 'passwordMaxClassChars' => 3, 'passwordMaxSequence' => 4, 'passwordMaxSeqSets' => 2, 'passwordPalindrome' => 'on', 'passwordDictCheck' => 'on' }`
+
 ##### <a name="-simp_ds389--instances--accounts--users_group_id"></a>`users_group_id`
 
 Data type: `Integer[1]`

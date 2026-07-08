@@ -19,6 +19,4 @@ fixtures:
 # for testing on the client
     simp_openldap: https://github.com/simp/pupmod-simp-simp_openldap.git
     simp_options: https://github.com/simp/pupmod-simp-simp_options.git
-  symlinks:
-    simp_ds389: "#{source_dir}"
 
