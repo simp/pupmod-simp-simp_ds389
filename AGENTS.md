@@ -12,20 +12,14 @@ SUDOers subtree, ACIs, and a no-expire/no-lockout password policy container for
 automated accounts), applies a compliance-oriented password policy from module
 data, and optionally opens the LDAP ports in the firewall.
 
-The module is **not** a class. Its entire public surface is one *defined type*,
-`simp_ds389::instances::accounts` (`manifests/instances/accounts.pp`) — there
-is no `init.pp` and no `simp_ds389` class. Consumers declare it as a resource
-(`simp_ds389::instances::accounts { 'accounts': ... }`); because it is a defined
-type, it can be declared more than once to create multiple independent instances,
-each keyed by a distinct `$instance_name`.
+Its entire public surface is one *class*, `simp_ds389::instances::accounts` (`manifests/instances/accounts.pp`) — there is no `init.pp` and no top-level `simp_ds389` class. Consumers include it (`include simp_ds389::instances::accounts`) or declare it as a class resource with parameters; because it is a class it is declared once per catalog, managing a single instance keyed by `$instance_name`.
 
 ### Business logic
 
-The module has a single defined type; there are no classes and no other defines.
+The module has a single class; there are no defined types and no other classes.
 
 - **`simp_ds389::instances::accounts`
-  (`manifests/instances/accounts.pp`)** — Public entry defined type (not
-  `assert_private()`'d). Key parameters (`accounts.pp`):
+  (`manifests/instances/accounts.pp`)** — Public entry class (not `assert_private()`'d). Key parameters (`accounts.pp`):
   - `$instance_name` (`String[1]`, default `'accounts'`, `accounts.pp`) — the
     unique instance name and the `ds389::instance` resource title.
   - `$base_dn` (`String[2]`, `accounts.pp`) — defaults to
@@ -91,13 +85,8 @@ The module has a single defined type; there are no classes and no other defines.
 
 ### Gotchas / non-obvious details
 
-- **There is no `simp_ds389` class and no `init.pp`.** The only definition is
-  the defined type `simp_ds389::instances::accounts`. Declare it as a resource;
-  `include simp_ds389` will not work. It is *not* auto-included anywhere.
-- **It is a defined type, so declare-once assumptions do not hold.** Two
-  declarations with the same `$instance_name` will collide on the
-  `ds389::instance` title and the firewall rule title (both interpolate
-  `$instance_name`); multiple *instances* must each use a unique name.
+- **There is no top-level `simp_ds389` class and no `init.pp`.** The only definition is the class `simp_ds389::instances::accounts`. `include simp_ds389` will not work; use `include simp_ds389::instances::accounts`. It is *not* auto-included anywhere.
+- **It is a class, so it is declared once per catalog** and manages a single instance. The per-instance resource titles (`ds389::instance` and the firewall rule) interpolate `$instance_name`, so a single catalog cannot host two instances of this module; multiple 389ds instances would require the underlying `ds389::instance` defined type directly.
 - **The required `$password_policy` comes from module data, not the caller.**
   It has no manifest default (`accounts.pp`), so compilation depends on
   `data/common.yaml` (loaded via this module's `hiera.yaml`) providing
@@ -174,8 +163,7 @@ OracleLinux 8/9/10; Rocky 8/9/10; AlmaLinux 8/9/10.
 
 - `manifests/instances/accounts.pp` — the sole manifest; the
   `simp_ds389::instances::accounts` defined type (all logic). No `init.pp`.
-- `templates/instances/accounts/bootstrap.ldif.epp` — the organizational LDIF
-  rendered by the defined type (groups, subtrees, ACIs, SUDOers, password-policy
+- `templates/instances/accounts/bootstrap.ldif.epp` — the organizational LDIF rendered by the class (groups, subtrees, ACIs, SUDOers, password-policy
   container).
 - `data/common.yaml` — supplies the required
   `simp_ds389::instances::accounts::password_policy` and the deep-merge
@@ -232,8 +220,7 @@ gems (`['openvox', 'puppet'].each do |gem_name|`). Other pins:
 
 ## Conventions
 
-- Preserve the `@summary` / `@param` puppet-strings docstrings on the defined
-  type — they drive `REFERENCE.md`. Regenerate `REFERENCE.md` after changing
+- Preserve the `@summary` / `@param` puppet-strings docstrings on the class — they drive `REFERENCE.md`. Regenerate `REFERENCE.md` after changing
   docs or parameters.
 - Keep the compliance `password_policy` in module data (`data/common.yaml`), not
   hard-coded in the manifest; it is deliberately the module-data default for the
