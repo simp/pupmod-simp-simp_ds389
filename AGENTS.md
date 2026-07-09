@@ -13,7 +13,7 @@ automated accounts), applies a compliance-oriented password policy from module
 data, and optionally opens the LDAP ports in the firewall.
 
 The module is **not** a class. Its entire public surface is one *defined type*,
-`simp_ds389::instances::accounts` (`manifests/instances/accounts.pp:73`) — there
+`simp_ds389::instances::accounts` (`manifests/instances/accounts.pp`) — there
 is no `init.pp` and no `simp_ds389` class. Consumers declare it as a resource
 (`simp_ds389::instances::accounts { 'accounts': ... }`); because it is a defined
 type, it can be declared more than once to create multiple independent instances,
@@ -24,70 +24,70 @@ each keyed by a distinct `$instance_name`.
 The module has a single defined type; there are no classes and no other defines.
 
 - **`simp_ds389::instances::accounts`
-  (`manifests/instances/accounts.pp:73-133`)** — Public entry defined type (not
-  `assert_private()`'d). Key parameters (`accounts.pp:74-92`):
-  - `$instance_name` (`String[1]`, default `'accounts'`, `accounts.pp:74`) — the
+  (`manifests/instances/accounts.pp`)** — Public entry defined type (not
+  `assert_private()`'d). Key parameters (`accounts.pp`):
+  - `$instance_name` (`String[1]`, default `'accounts'`, `accounts.pp`) — the
     unique instance name and the `ds389::instance` resource title.
-  - `$base_dn` (`String[2]`, `accounts.pp:75`) — defaults to
+  - `$base_dn` (`String[2]`, `accounts.pp`) — defaults to
     `simplib::lookup('simp_options::ldap::base_dn', { 'default_value' => ... })`
     where the fallback is derived from the node's domain via
     `simplib::ldap::domain_to_dn($facts.get('networking.domain'), true)`.
-  - `$root_dn` (`String[2]`, default `'cn=Directory_Manager'`, `accounts.pp:76`)
+  - `$root_dn` (`String[2]`, default `'cn=Directory_Manager'`, `accounts.pp`)
     — the directory administrator DN. Note the docstring warning
-    (`accounts.pp:12-13,18-19`): to work around application bugs, values with
+    (`accounts.pp`): to work around application bugs, values with
     spaces must not be used for `$root_dn` / `$root_pw`.
-  - `$root_pw` (`String[2]`, `accounts.pp:77`) — defaults to a generated
+  - `$root_pw` (`String[2]`, `accounts.pp`) — defaults to a generated
     secret: `simplib::passgen('simp_ds389-rootdn_accounts', { 'length' => 64,
     'complexity' => 0 })`.
-  - `$bind_dn` (`String[2]`, `accounts.pp:78`) — defaults to
+  - `$bind_dn` (`String[2]`, `accounts.pp`) — defaults to
     `simplib::lookup('simp_options::ldap::bind_dn', ...)` with fallback
     `"cn=hostAuth,ou=Hosts,${base_dn}"`.
-  - `$bind_pw` (`String[1]`, `accounts.pp:79`) — defaults to
+  - `$bind_pw` (`String[1]`, `accounts.pp`) — defaults to
     `simplib::lookup('simp_options::ldap::bind_pw', ...)` with fallback
     `simplib::passgen("ds389_${instance_name}_bindpw", { 'length' => 64 })`.
-  - `$listen_address` (`Simplib::IP`, default `'0.0.0.0'`, `accounts.pp:80`).
-  - `$enable_tls` (`Variant[Boolean, Enum['simp']]`, `accounts.pp:81`) — defaults
+  - `$listen_address` (`Simplib::IP`, default `'0.0.0.0'`, `accounts.pp`).
+  - `$enable_tls` (`Variant[Boolean, Enum['simp']]`, `accounts.pp`) — defaults
     to `simplib::lookup('simp_options::pki', { 'default_value' => false })`.
     `'simp'` copies certs from the puppetserver; `true` copies from a local
-    directory; `false` disables TLS (`accounts.pp:30-38`).
-  - `$firewall` (`Boolean`, `accounts.pp:82`) — defaults to
+    directory; `false` disables TLS (`accounts.pp`).
+  - `$firewall` (`Boolean`, `accounts.pp`) — defaults to
     `simplib::lookup('simp_options::firewall', { 'default_value' => false })`.
-  - `$trusted_nets` (`Simplib::Netlist`, `accounts.pp:83`) — defaults to
+  - `$trusted_nets` (`Simplib::Netlist`, `accounts.pp`) — defaults to
     `simplib::lookup('simp_options::trusted_nets', ...)` with fallback
     `['127.0.0.1/32']`.
   - `$port` / `$secure_port` (`Simplib::Port`, defaults `389` / `636`,
-    `accounts.pp:84-85`).
+    `accounts.pp`).
   - `$tls_params` / `$instance_params` (`Hash`, default `{}`,
-    `accounts.pp:86-87`) — passthrough hashes; `$instance_params` is splatted
+    `accounts.pp`) — passthrough hashes; `$instance_params` is splatted
     into `ds389::instance` (see below).
   - `$password_policy` (`Ds389::ConfigItem`, **no default in the manifest**,
-    `accounts.pp:88`) — required, but satisfied from module data
-    (`data/common.yaml:17`), not by the caller. The comment `#data in module`
+    `accounts.pp`) — required, but satisfied from module data
+    (`data/common.yaml`), not by the caller. The comment `#data in module`
     marks this.
   - `$users_group_id` / `$administrators_group_id` (`Integer[1]` / `Integer[500]`,
-    defaults `100` / `700`, `accounts.pp:91-92`) — POSIX gids baked into the
+    defaults `100` / `700`, `accounts.pp`) — POSIX gids baked into the
     bootstrap LDIF.
 
   Control flow and resources:
-  - **Bootstrap LDIF render** (`accounts.pp:95-104`): renders
+  - **Bootstrap LDIF render** (`accounts.pp`): renders
     `templates/instances/accounts/bootstrap.ldif.epp` via `epp()`, passing
     `base_dn`, `root_dn`, `bind_dn`, `bind_pw`, and the two group ids, into
     `$_bootstrap_ldif_content`. The template emits the domain root entry, a
     Directory Administrators group, `ou=Hosts`/`ou=People`/`ou=Groups`/`ou=SUDOers`
     subtrees, ACIs, `users`/`administrators` posix groups, and a
     no-expire/no-lockout password-policy container for automated accounts.
-  - **`ds389::instance { $instance_name }`** (`accounts.pp:106-118`): the core
+  - **`ds389::instance { $instance_name }`** (`accounts.pp`): the core
     resource. Maps this module's params onto the `simp/ds389` defined type
     (`root_pw` → `root_dn_password`, the rendered LDIF → `bootstrap_ldif_content`,
     etc.) and **splats `$instance_params` last with `* => $instance_params`**
-    (`accounts.pp:117`) so callers can pass arbitrary additional `ds389::instance`
+    (`accounts.pp`) so callers can pass arbitrary additional `ds389::instance`
     arguments.
-  - **Firewall branch** (`accounts.pp:120-132`): only when `$firewall` is true.
+  - **Firewall branch** (`accounts.pp`): only when `$firewall` is true.
     Port list is `[$port, $secure_port]` when `$enable_tls` is truthy, else just
-    `[$port]` (`accounts.pp:121-125`); it then declares
+    `[$port]` (`accounts.pp`); it then declares
     `simp_firewalld::rule { "Allow 389DS ${instance_name} instance" }` over
     `$trusted_nets`, `apply_to => 'all'`, tcp `dports => $_ports`
-    (`accounts.pp:126-131`).
+    (`accounts.pp`).
 
 ### Gotchas / non-obvious details
 
@@ -99,29 +99,29 @@ The module has a single defined type; there are no classes and no other defines.
   `ds389::instance` title and the firewall rule title (both interpolate
   `$instance_name`); multiple *instances* must each use a unique name.
 - **The required `$password_policy` comes from module data, not the caller.**
-  It has no manifest default (`accounts.pp:88`), so compilation depends on
-  `data/common.yaml:17` (loaded via this module's `hiera.yaml`) providing
+  It has no manifest default (`accounts.pp`), so compilation depends on
+  `data/common.yaml` (loaded via this module's `hiera.yaml`) providing
   `simp_ds389::instances::accounts::password_policy`. The three passthrough
   hashes have deep-merge `lookup_options` with `knockout_prefix: --`
-  (`data/common.yaml:2-14`) — note those `lookup_options` keys are written as
+  (`data/common.yaml`) — note those `lookup_options` keys are written as
   `simp_ds389::instance::accounts::*` (singular `instance`), which does **not**
   match the actual class path `simp_ds389::instances::accounts::*` (plural). Be
   careful before relying on the merge behavior of `password_policy` /
   `tls_params` / `instance_params`.
 - **Secrets are auto-generated by default.** `$root_pw` and `$bind_pw` default to
-  `simplib::passgen(...)` (`accounts.pp:77,79`); the values live in the passgen
+  `simplib::passgen(...)` (`accounts.pp`); the values live in the passgen
   store, not in the catalog inputs. Overriding them in the clear is discouraged.
-- **`$instance_params` is splatted last** (`accounts.pp:117`), so a key in
+- **`$instance_params` is splatted last** (`accounts.pp`), so a key in
   `$instance_params` will override the explicitly-set `ds389::instance` arguments
   above it. Treat it as an escape hatch, not the primary configuration path.
 - **`simp_options` is consumed but is not a runtime dependency.** The manifest
   reads the `simp_options::*` seam via `simplib::lookup` (provided by
   `simp/simplib`), yet `simp/simp_options` is not in `metadata.json` — it appears
-  only as a fixture (`.fixtures.yml:21`). This is the normal SIMP pattern.
+  only as a fixture (`.fixtures.yml`). This is the normal SIMP pattern.
 - **No `assert_private()` and no `assert_optional_dependency()` anywhere.** There
   are no optional dependencies; every declared dependency is a hard runtime dep.
 - **`$secure_port` is only opened in the firewall when TLS is on**
-  (`accounts.pp:121-125`) — enabling `$firewall` without `$enable_tls` opens only
+  (`accounts.pp`) — enabling `$firewall` without `$enable_tls` opens only
   the plaintext/STARTTLS port.
 
 ## The `simp_options` / `simplib::lookup` seam
@@ -129,14 +129,14 @@ The module has a single defined type; there are no classes and no other defines.
 This is the module's real business-logic seam (the natural target for a
 lookup-path unit test). All calls are in `manifests/instances/accounts.pp`:
 
-| Line | Key | `default_value` |
+| File | Key | `default_value` |
 |------|-----|-----------------|
-| `accounts.pp:75` | `simp_options::ldap::base_dn` | `sprintf(simplib::ldap::domain_to_dn($facts.get('networking.domain'), true))` |
-| `accounts.pp:78` | `simp_options::ldap::bind_dn` | `"cn=hostAuth,ou=Hosts,${base_dn}"` |
-| `accounts.pp:79` | `simp_options::ldap::bind_pw` | `simplib::passgen("ds389_${instance_name}_bindpw", { 'length' => 64 })` |
-| `accounts.pp:81` | `simp_options::pki` | `false` |
-| `accounts.pp:82` | `simp_options::firewall` | `false` |
-| `accounts.pp:83` | `simp_options::trusted_nets` | `['127.0.0.1/32']` |
+| `accounts.pp` | `simp_options::ldap::base_dn` | `sprintf(simplib::ldap::domain_to_dn($facts.get('networking.domain'), true))` |
+| `accounts.pp` | `simp_options::ldap::bind_dn` | `"cn=hostAuth,ou=Hosts,${base_dn}"` |
+| `accounts.pp` | `simp_options::ldap::bind_pw` | `simplib::passgen("ds389_${instance_name}_bindpw", { 'length' => 64 })` |
+| `accounts.pp` | `simp_options::pki` | `false` |
+| `accounts.pp` | `simp_options::firewall` | `false` |
+| `accounts.pp` | `simp_options::trusted_nets` | `['127.0.0.1/32']` |
 
 Keep routing SIMP feature toggles through `simplib::lookup('simp_options::*', {
 'default_value' => ... })` with an explicit default rather than assuming
