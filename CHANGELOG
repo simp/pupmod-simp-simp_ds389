@@ -1,5 +1,5 @@
 * Thu Jul 02 2026 Steven Pritchard <steve@sicura.us> - 2.0.1
-- Allow simp-simp_firewalld 2.x
+- Allow simp-simp_firewalld 2.x and 3.x
 
 * Mon Jun 08 2026 Steven Pritchard <steven.pritchard@gmail.com> - 2.0.0
 - Switch `requirements` from `puppet` to `openvox` (>= 8 < 9)
