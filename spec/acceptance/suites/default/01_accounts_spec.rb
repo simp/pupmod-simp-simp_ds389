@@ -26,7 +26,7 @@ describe 'simp_ds389 class' do
 
       let(:hieradata) do
         {
-          'simp_ds389::instances::accounts::root_pw' =>  root_pw.to_s,
+          'simp_ds389::instances::accounts::root_pw' => root_pw.to_s,
         }
       end
 
