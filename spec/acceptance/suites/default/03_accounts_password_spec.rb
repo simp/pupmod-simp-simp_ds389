@@ -38,7 +38,7 @@ describe 'simp_ds389 class' do
     let(:hieradata) do
       {
         'simp_ds389::instances::accounts::tls_params' => {
-          'source'     => pki_source.to_s,
+          'source' => pki_source.to_s,
         },
         'simp_options::pki' => true,
         'simp_options::pki::source' => pki_source.to_s,
