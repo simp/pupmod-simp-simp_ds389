@@ -188,4 +188,3 @@ The pupmod-simp-simp module configures permissions on systems using
 simp with the admin.pp manifest.
 
 Default value: `700`
-
