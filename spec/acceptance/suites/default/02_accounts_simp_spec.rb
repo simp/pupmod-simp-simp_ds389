@@ -11,8 +11,8 @@ describe 'simp_ds389 class' do
   #
   #  This test sets up a 389ds server using TLS.  It sets  data using simp_options
   #  settings in hiera to mimic what would happen if simp_cli were run.
-  #  It  tests connecting from other hosts using openldap client to make
-  #  sure the firewall is open and the the bind_dn can access the base_dn.
+  #  It tests connecting from other hosts with ldapsearch to make sure the
+  #  firewall is open and the bind_dn can access the base_dn.
   #
   servers = hosts_with_role(hosts, 'directory_server')
   clients = hosts_with_role(hosts, 'client')
@@ -108,8 +108,6 @@ describe 'simp_ds389 class' do
       context "#{client} connecting to #{server}" do
         let(:client_manifest) do
           <<-EOS
-         include 'simp_openldap::client'
-
          #let vagrant ssh in
          simp_firewalld::rule { "Allow ssh":
             trusted_nets => ['ALL'],
@@ -128,12 +126,18 @@ describe 'simp_ds389 class' do
         it 'is idempotent' do
           apply_manifest_on(client, client_manifest, catch_changes: true)
         end
+
+        it 'installs the ldap client tools' do
+          # ldapsearch is test tooling only; nothing on a real client needs it.
+          install_package_unless_present_on(client, 'openldap-clients')
+          client.add_env_var('LDAPTLS_CACERT', '/etc/pki/simp-testing/pki/cacerts/cacerts.pem')
+        end
+
         it 'is able to connect using the bind DN and password' do
           # Wait for client to be able to connect to the server on the ldaps port.
           wait_for_tcp_from(client, server_fqdn, 636)
 
-          # LDAP server parameters are set in /etc/openldap/ldap.conf by simp_openldap
-          result = on(client, "ldapsearch -D #{bind_dn} -w #{bind_pw} -H ldaps://#{server_fqdn}")
+          result = on(client, "ldapsearch -x -D #{bind_dn} -w #{bind_pw} -H ldaps://#{server_fqdn} -b #{base_dn}")
           expect(result.output).to include('dn: cn=users,ou=Groups,')
         end
       end
