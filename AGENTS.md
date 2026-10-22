@@ -148,7 +148,7 @@ Module dependencies (from `metadata.json`) — all hard runtime deps; there are
 
 Fixture-only dependencies (from `.fixtures.yml`, checked out for test
 compilation, not runtime deps): `augeas_core`, `augeasproviders_core`,
-`firewalld`, `pki`, `systemd`, `vox_selinux`, `selinux`, `simp_openldap`, and
+`firewalld`, `pki`, `systemd`, `vox_selinux`, `selinux`, and
 `simp_options` (plus the runtime deps above are also checked out as fixtures).
 
 Runtime requirement (from `metadata.json` `requirements`): `openvox
